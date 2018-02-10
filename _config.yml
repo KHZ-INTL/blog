@@ -3,7 +3,7 @@ description: Blogs of ideas and challenges
 meta_description: "Cracking/RE licensing protection and abit of capture the flag/"
 
 markdown: kramdown
-highlighter: pygments
+highlighter: rouge
 logo: false
 paginate: 15
 baseurl: /
