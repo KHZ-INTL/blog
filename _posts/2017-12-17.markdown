@@ -67,19 +67,6 @@ If you are using Olly Debuger there are some plugins that can help with this, su
 
 
 
-The paramaters that are passed to "CreateFileA" function call are inverse compared to the Win32 API Reference, this is because how the call stack work?????.
-
-
-
-
-change:
-heating and cooling - qoute
-
-Only fix/replace cooling unit. Qoute cost.
-Adelaide Gas heating for heating - cooling. Cost about 10K
-
-example
-
 
 ###### File Handling 
 
