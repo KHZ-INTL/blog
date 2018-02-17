@@ -8,7 +8,7 @@ categories: Crackme SnD Writeup Tutorial
 CrackMe #1 - DRAFT
 
 
-The main goal of this CrackMe is to get the success message by validating a license key from a file.
+The main goal of this CrackMe is to get the success message by either validating a license key from a file or patching the execution flow of the program.
 
 
 ##### Tl;dr:
@@ -16,7 +16,7 @@ Summary:
 
 The licensing algorithm checks the Keyfile.dat file for a valid license key. It is possible to pass the algorithm check as long as the license key complies with the following conditions:
 + The length of the license key should be at least 16 bytes long (16 letters).
-+ Should contain a minimum of 8 47h(hex) or "G"s, before any 0s in the license key.
++ Should contain a minimum of 8 47h(hex) or "G"s, before any zeroes in the license key.
 
 The following license key would pass the licensing check: "GGGGGGGGGG000000".
 
@@ -38,7 +38,9 @@ for each_letter in licenseKey:
 {% endhighlight %}
 
 ##### Solving the CrackMe
-Solving a simple CrackMe challenge like this one can be achieved using several methods, including patching the Operation Codes(OP Codes), and/or devising a licensekey based on the licensing algorithm and the license key "Read/Write" API calls. In this write-up we will focus on the later option. In order to devise a license key first we need to identify the structure and as well as other paramaters of a valid license key. These include:
+Solving a simple CrackMe challenge like this one can be achieved using several methods, including patching the execution flow of the program by patching the operation codes (opcode), and/or devising a licensekey based on the licensing algorithm and the license key file "Read/Write" operations. This write-up will focus on the later option. 
+
+In order to devise a license key first we need to identify the structure and as well as other paramaters of a valid license key. These include:
 + License key length/size
 + Content type: is the license key made up of numbers, letters or both (alphanumeric)
 + if the key is stored in a file, what is the file name?
@@ -63,14 +65,19 @@ If a program needs to write to file, it needs to call a predifined win32 functio
 If you are using Olly Debuger there are some plugins that can help with this, such as <a href="http://www.openrce.org/downloads/details/211/APIFinder" target="_blank">APIFinder</a> by Tomisslav Pericin. There are plugins available for other debugers, you will need do a google search. For example: debuggerName API finder/set breakpoint.
 
 
- If we search the disassembled CrackMe executeable for calls to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx" target="_blank">CreateFile</a> function. We come up with a call to "CreateFileA" instead of "CreateFile". The "CreateFileA" is the American National Standards Institute(ANSI) version of "CreateFile", which is a standard for the charcter encoding system. The characters encoded using ANSI standard are 1 byte long compared to the 2 bytes long Unicode encoded characters. Meaning the ANSI standard has a maximum characterset of 255 characters while the UNICODE standard has a maximum characterset of 65,536 characters <a href="https://ehsanakhgari.org/article/visual-c/2008-06-21/unicode" target="_blank"> (Akhgari,  2008)</a>. The call to "CreateFileA" function is made accordingly (in red box):
+ If we search the disassembled CrackMe executeable for calls to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx" target="_blank">CreateFile</a> function. We come up with a call to "CreateFileA" instead of "CreateFile". The "CreateFileA" is the American National Standards Institute(ANSI) version of "CreateFile", which is a standard for the charcter encoding system. The characters encoded using ANSI standard are 1 byte long compared to the 2 bytes long Unicode encoded characters. Meaning the ANSI standard has a maximum characterset of 255 characters while the UNICODE standard has a maximum characterset of 65,536 characters <a href="https://ehsanakhgari.org/article/visual-c/2008-06-21/unicode" target="_blank"> (Akhgari,  2008)</a>. The Win32 API documentation for "CreateFileA" states that it "Creates or opens a file...(and) The function returns a handle that can be used to access the file...". The call to "CreateFileA" function is made accordingly (in red box):
  
 ![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1-createfile-annotated.png)
 
- In the screenshot above, we can see, before the CreateFileA call, the paramaters for that function are pushed onto the stack. OllyDbg has cleverly annotated them. Comparing it to the API documentation, we can see that the function paramaters are passed in reverse order. <a href="https://blogs.msdn.microsoft.com/oldnewthing/20040108-00/?p=41163/" target="_blank">Chen 2004</a>, from MSDN blogs, describes that functions are passed in reverse order (in reference to CDECL calling convention)"...so that the first parameter is nearest to top-of-stack...". Thinking back to how the stack works, it does sort of make sense?, the Last element In would be the First to be Out (LIFO) <a href="https://en.wikipedia.org/wiki/LIFO_%28computing%29
-" target="_blank">(Wikipedia, 2018)</a>. Getting back from the wild tangent, if you read the API refrence for CreateFile/A we can see that in order to create a file we need to pass several paramaters, among them is a file name (lpFileName). The filename that is passsed in for this particular call is "keyfile.dat". For the sake of the tutorial and the simpleness of this crackme, we can assume that this filename confirms that the license key is being stored locally and in this file. 
+ 
+ In the screenshot above, we can see that before the CreateFileA call, the paramaters for that function are pushed onto the stack. OllyDbg has cleverly annotated them. Comparing it to the API documentation, we can see that the function paramaters are passed in reverse order. <a href="https://blogs.msdn.microsoft.com/oldnewthing/20040108-00/?p=41163/" target="_blank">Chen 2004</a>, from MSDN blogs, describes that parameters are passed in reverse order (in reference to CDECL calling convention)"...so that the first parameter is nearest to top-of-stack...". Thinking back to how the stack works, it does sort of make sense?, the Last element In would be the First to be Out (LIFO) <a href="https://en.wikipedia.org/wiki/LIFO_%28computing%29
+" target="_blank">(Wikipedia, 2018)</a>. If you read the API refrence for CreateFileA we can see that in order to create a file we need to pass several paramaters, among them is a file name (lpFileName).  The filename that is passsed for this particular call is "keyfile.dat". For the sake of the tutorial and the simpleness of this crackme, we can assume that this filename confirms that the license key is being stored locally and in this file. The CreateFileA api refrence mentions that it returns either a file handle or a "-1" using the EAX register. Meaning, if the CreateFileA function was able to open "Keyfile.dat", it would return the handle to that file in the EAX register and if it did not, it would return "-1".
 
-If we look further, right after the call there is a compare instruction (CMP), it compares the content of EAX register and the value "-1", specifically it performs a logical AND operation on EAX and "-1" (please refer to the X86 Opcode manual)Based on the result of the operation, flags such as the ZF(Zero), SF(Signed) and PF(Parity) are set. The CreateFileA api refrence mentions that it returns either a file handle or a "-1" using the EAX register. Meaning, if the CreateFileA function was able to open "Keyfile.dat", it would return the handle to that file in the EAX register and if it didn't it would return "-1". Continuing onto the next operation, there is a Jump If Not Equal (JNE) operation. The JNE  
+Next, there is a compare instruction (CMP), taking the EAX register and "-1" as operands. It compares the content of EAX register and the value "-1", specifically it performs a logical AND operation on EAX and "-1" (please refer to an X86 Opcode <a href="https://c9x.me/x86/" target="_blank">manual</a>).Based on the result of the operation, flags such as the ZF(Zero), SF(Signed) and PF(Parity) flags are set in the EFLAGs register. In refrence to the mentioned x86 opcode manual (JCC section) the JNE - Jump if Not Equal (opcode 75) instruction jumps to the location passed as its operand (0040109A) if the Zf(zero) flag equal to 0 or the CMP/previous operation changed the state of the Z(zero) flag to 0(zero). Simply, in this case, if EAX did not equal to "-1" in the previous CMP operartion then it jumps to 0040109A. This is done to check if the license key is present.
+
+In the next few operations after the JNE, we can see that few things are pushed on to the stack before calling MessageBoxA (refer to the win32 api if need to). Observing these paramaters, the text for the message box says "Evaluation period out of date...". Thus we need to take the jump at JNE operation to change the flow of the crackme. To accomplish this, at the JNE operation, the state of the Zero flag needs to be 0. The Zero flag is set based on the CMP instruction, comparing EAX and "-1". In order for CreateFileA to return a file handle other than "-1" it has to be able to open the specified file "Keyfile.dat". Create a file with the same name in the same directory as the crackme file. Restarting the debugging in OllyDbg, we are now able to skip the evaluation message.        
+
+
 	   
 
 
