@@ -13,11 +13,11 @@ The main goal of this CrackMe is to get the success message by either validating
 ##### Tl;dr:
 Summary:
 
-The licensing algorithm checks the Keyfile.dat file for a valid license key. It is possible to pass the licensing check as long as the license key complies with the following conditions:
+The licensing algorithm checks the Keyfile.dat file for a valid license key. It is possible to pass the licensing check if the license key complies with the following conditions:
 + The length of the license key should be at least 16 bytes long (16 letters).
 + Should contain a minimum of 8 47h(hex) or "G"s, before any zeroes in the license key.
 
-The following license key would pass the licensing check: "GGGGGGGGGG000000".
+The following license key should pass the licensing check: "GGGGGGGGGG000000".
 
 The license validation algorithm is something like (psudo python):
 
@@ -39,7 +39,7 @@ for each_letter/character in licenseKey:
 ##### Solving the CrackMe
 Solving a simple CrackMe challenge like this one can be achieved using several methods, including patching the execution flow of the program by patching the operation codes (opcode), and/or devising a licensekey based on the licensing algorithm and the license key file "Read/Write" operations. This write-up will focus on the later option. 
 
-In order to devise a license key first we need to identify the structure and as well as other parameters of a valid license key. These include:
+To devise a license key first we need to identify the structure and as well as other parameters of a valid license key. These include:
 + License key length/size
 + Content type: is the license key made up of numbers, letters or both (alphanumeric)
 + if the key is stored in a file, what is the file name?
@@ -86,7 +86,7 @@ Jumping past the evaluation error message we land at 0x40109A where the stack is
 
 
 
-
+Essentially the ReadFile function is called to read the serial key from the Keyfile.dat into the memory.
 Looking at it from a practical point of view, this function is being called to read the serial key from the "Keyfile.dat" file. 
 
 
@@ -94,7 +94,7 @@ Figure 2: ReadFile
 ![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-readfile.png)
 
 
-License Algorithm:
+Figure 3: License Algorithm
 ![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-licensing-algoriythm.png)
 	   
 
