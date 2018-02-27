@@ -41,11 +41,11 @@ Solving a simple CrackMe challenge like this one can be achieved using several m
 
 To devise a license key first we need to identify the structure and as well as other parameters of a valid license key. These include:
 + License key length/size
-+ Content type: is the license key made up of numbers, letters or both (alphanumeric)
++ Content type: is the license key made up of numbers, letters or both (alphanumeric) and/or special characters(e.g "!@#$...")
 + if the key is stored in a file, what is the file name?
 
 To gather information about the license key we need to identify how the program interacts with it. In a real scenario, a program may need to validate and save the licensing information when it is activated. Furthermore, it may need to read the licensing information again when the program is re-launched. Programs have many options when it comes to saving data/user licensing infromation, these include:
-+ Save data to the Registry (in case of windows).
++ Save data to the Registry (in case of windows OS).
 + Write to a file.
 + Handle licensing information using a remote server.
 
