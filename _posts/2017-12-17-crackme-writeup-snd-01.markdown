@@ -1,17 +1,19 @@
 ---
 layout: post
-title:  "CrackMe Writeup - SnD Reversing Tutorial #1"
+title:  "CrackMe Writeup/Personal notes - SnD Reversing Tutorial #1"
 date:   2017-11-17 10:18:00
-categories: Crackme SnD Writeup Tutorial 
+categories: Crackme SnD Writeup  
 ---
 
-CrackMe #1 - DRAFT
+CrackMe: CrackMe from Search and Destroy (SnD) Reversing Tutorial #1
 
-The main goal of this CrackMe is to get the success message by either validating a license key from a file or patching the execution flow of the program.
+The main goal of this CrackMe is to get the success message by either validating a license key from a file or patching the execution flow of the program. 
+
+At the time of writing of this writeup I had moved from windows to linux OS and some resources were not avialble. However, I used necessary resources to compensate. The pictures/screenshots may look different but please use memory addressess as a reference.   
 
 
 ##### Tl;dr:
-Summary:
+Summary
 
 The licensing algorithm checks the Keyfile.dat file for a valid license key. It is possible to pass the licensing check if the license key complies with the following conditions:
 + The length of the license key should be at least 16 bytes long (16 letters).
@@ -73,25 +75,37 @@ Figure 1: CreateFileA - Opening "Keyfile.dat" and Returning a file handle
  In the screenshot above, we can see that before the CreateFileA call, the parameters for that function are pushed onto the stack. OllyDbg has cleverly annotated them. Comparing it to the API documentation, we can see that the function parameters are passed in reverse order. <a href="https://blogs.msdn.microsoft.com/oldnewthing/20040108-00/?p=41163/" target="_blank">Chen 2004</a>, from MSDN blogs, describes that parameters are passed in reverse order (in reference to CDECL calling convention)"...so that the first parameter is nearest to top-of-stack...". Thinking back to how the stack works, it does sort of make sense?, the Last element In would be the First to be Out (LIFO) <a href="https://en.wikipedia.org/wiki/LIFO_%28computing%29
 " target="_blank">(Wikipedia, 2018)</a>. If you read the API refrence for CreateFileA we can see that in order to create a file we need to pass several parameters, among them is a file name (lpFileName).  The filename that is passsed for this particular call is "keyfile.dat". For the sake of the tutorial and the simpleness of this crackme, we can assume that this filename confirms that the license key is being stored locally and in this file. The CreateFileA api refrence mentions that it returns either a file handle or a "-1" using the EAX register. Meaning, if the CreateFileA function was able to open "Keyfile.dat", it would return the handle to that file in the EAX register and if it did not, it would return "-1".
 
-Next, there is a compare instruction (CMP), taking the EAX register and "-1" as operands. It compares the content of the operands, specifically it performs a logical AND operation (please refer to an X86 Opcode <a href="https://c9x.me/x86/" target="_blank">manual</a>).Based on the result of the operation, flags such as the ZF(Zero), SF(Signed) and PF(Parity) flags are set in the EFLAGs register. In refrence to the mentioned x86 opcode manual (JCC section) the JNE - Jump if Not Equal (opcode 75) instruction jumps to the location passed as its operand (0040109A), if the Zf(zero) flag equal to 0 or the CMP/previous operation changed the state of the Z(zero) flag to 0(zero). Simply, in this case, if EAX did not equal to "-1" in the previous CMP operartion then it jumps to 0040109A. This is done to check if the license key is present.
+Next, there is a compare instruction (CMP), taking the EAX register and "-1" as operands. It compares the content of the operands, specifically it performs a logical AND operation (please refer to an X86 Opcode <a href="https://c9x.me/x86/" target="_blank">manual</a>). Based on the result of the operation, flags such as the ZF(Zero), SF(Signed) and PF(Parity) flags are set in the EFLAGs register. In refrence to the mentioned x86 opcode manual (JCC section) the JNE - Jump if Not Equal (opcode 75) instruction jumps to the location passed as its operand (0040109A), if the Zf(zero) flag equal to 0 or the CMP/previous operation changed the state of the Z(zero) flag to 0(zero). Simply, in this case, if EAX did not equal to "-1" in the previous CMP operartion then it jumps to 0040109A. This is done to check if the license key file is present.
 
 Continuing on, few things are pushed on to the stack before calling MessageBoxA (refer to the win32 api if need to). Observing these parameters, the text for the MessageBoxA says "Evaluation period out of date...". To avoid getting this error we need to take the jump at JNE operation to change the flow of the program. To accomplish this, at the JNE operation(at 0x40107B), the state of the Zero flag needs to be 0. The Zero flag is set based on the CMP instruction. In order for CreateFileA to return a file handle and not "-1" it has to be able to open the specified file "Keyfile.dat". In the same directory as the crackme executeable ceate a file named "Keyfile.dat". With the licensekey file created, debugging again, the execution flow of the program has changed and we no longer see the evaluation error message. 
 
-Jumping past the evaluation error message we land at 0x40109A where the stack is populated before a call to ReadFile function. The windows API refrence for <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365467(v=vs.85).aspx" target="_blank">ReadFile</a> mentions that the function reads data from a specified position within a specified file or an input/output device. The function takes the following parameters:
+Figure 2: ReadFile 
+![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-readfile.png)
+
+Jumping past the evaluation error message we land at 0x40109A where the stack is populated before a call to ReadFile function, refer to figure 2, above. The windows API refrence for <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365467(v=vs.85).aspx" target="_blank">ReadFile</a> mentions that the function reads data from a specified position within a specified file or an input/output device. The function takes the following parameters:
 + hFile (HANDLE): The handle to the file that needs to be read from,
 + lpBuffer (LPVOID): The pointer to the buffer, a pointer that points to the location in memory where data to be stored temporarly,
 + nNumberOfBytesToRead (DWORD): The amount of data (bytes) to be read.
-+ ...
++ etc...
 
 
+Looking at what is actually being pushed on to the stack before the ReadFile call, keeping in mind that the parameters are pushed inversly. We can see the following:
++ lpOverlapped: 0 ,
++ nNumberOfBytesRead: offset [00402173],
++ nNumberOfBytesToRead : 46 hex (bytes),
++ lpBuffer: offset [0040211A],
++ hFile Handle: EAX
 
+In reference to the Win32 API manual and the pushed parameters we can identify that it tries to open a file using the handle in the EAX register, which was set by the CreateFileA call earlier. Then it reads a maximum of 46h ("h" for hex) or 70 bytes from the file and stores them at the location pointed by the lpBuffer ([0040211A]). Try adding some text in the "Keyfile.dat" you had created earlier and you should be able to view them in the memory/hex dump at lpBuffer location (40211A). For example, figure 3 - hex dump section. Keeping in mind that with CDECL calling convention it is standard to return values from a call in the EAX register. The next operation "TEST EAX, EAX" conducts a logical AND operation on the returned value in the EAX register and sets the state of ZF based on the result. The API manual mentions that if the function succeeds then it would return a true value, a non-zero value. Thus if the fuction returns a non-zero value then the TEST operation on a non zero value would be 1 and based on this the ZF is set to 1 and vice versa for zero value. If you do an AND operation on 0 and 0 the result would be 0 and the zero flag would be set to 0. In the next operation, JNE SHORT 04010B4, a jump will take place based on the ZF status. If the ZF equals to 0 then it would jump to 04010B4 and if it did not it would continue to the next instruction, JMP 4010F7, to a invalid license key error message.  
+
+
+//NOTES
 
 Essentially the ReadFile function is called to read the serial key from the Keyfile.dat into the memory.
 Looking at it from a practical point of view, this function is being called to read the serial key from the "Keyfile.dat" file. 
 
 
-Figure 2: ReadFile 
-![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-readfile.png)
+
 
 
 Figure 3: License Algorithm
