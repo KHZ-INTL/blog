@@ -9,7 +9,7 @@ The main goal of this CrackMe is to get the success message by either validating
 
 CrackMe: CrackMe from Search and Destroy (SnD) Reversing Tutorial #1
 
-At the time of writing of this writeup, I had moved from windows to linux OS and some resources were not available. However, I used necessary resources to compensate. The pictures/screenshots may look different but please use memory addresses as a reference.   
+At the time of writing of this write-up, I had moved from windows to Linux OS and some resources were not available. However, I used necessary resources to compensate. The pictures/screenshots may look different but please use memory addresses as a reference.   
 
 
 ##### Tl;dr:
@@ -39,7 +39,7 @@ for each_letter/character in licenseKey:
 {% endhighlight %}
 
 ##### Solving the CrackMe
-Solving a simple CrackMe challenge like this one can be achieved using several methods, including patching the execution flow of the program by patching the operation codes (opcode), and/or devising a licensekey based on the licensing algorithm and the license key file "Read/Write" operations. This write-up will focus on the latter option. 
+Solving a simple CrackMe challenge like this one can be achieved using several methods, including patching the execution flow of the program by patching the operation codes (opcode), and/or devising a license key based on the licensing algorithm and the license key file "Read/Write" operations. This write-up will focus on the latter option. 
 
 To devise a license key first we need to identify the structure and as well as other parameters of a valid license key. These include:
 + License key length/size
@@ -51,7 +51,7 @@ To gather information about the license key we need to identify how the program 
 + Write to a file.
 + Handle licensing information using a remote server.
 
-Keeping in mind that this is a simple CrackMe challenge, we can safely assume it would not handle its licensing data using a webserver. Knowing that it is handled locally, we now need to identify whether if data is stored in the registry or in a file.
+Keeping in mind that this is a simple CrackMe challenge, we can safely assume it would not handle its licensing data using a web server. Knowing that it is handled locally, we now need to identify whether if data is stored in the registry or in a file.
 
 Programs do not have direct access to the storage device for reading and writing data and thus it will need to go through the Kernal. In this scenario, the kernel is simply an interface that takes in write/read requests and manages the underlying low-level operations. To access the kernal for reading/writing operations, the Windows 32 (win32) API library allows users to call and utilize its predefined functions and classes. The win32 API library documentation can be found:
 + <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn933214(v=vs.85).aspx" target="_blank">View on Microsoft Developers Network</a>
@@ -63,7 +63,7 @@ If a program needs to write to file, it needs to call a predefined win32 functio
 + Read and find it manually or,
 + Utilize available plugins.
 
-If you are using Olly Debugger there are some plugins that can help with this, such as <a href="http://www.openrce.org/downloads/details/211/APIFinder" target="_blank">APIFinder</a> by Tomisslav Pericin. There are plugins available for other debuggers, you will need do a google search. For example debuggerName API finder/set breakpoint.
+If you are using Olly Debugger there are some plugins that can help with this, such as <a href="http://www.openrce.org/downloads/details/211/APIFinder" target="_blank">APIFinder</a> by Tomisslav Pericin. There are plugins available for other debuggers, you will need to do a google search. For example debuggerName API finder/set breakpoint.
 
 
  If we search the disassembled CrackMe executable for calls to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx" target="_blank">CreateFile</a> function. We come up with a call to the "CreateFileA" instead of "CreateFile". The "CreateFileA" is the American National Standards Institute(ANSI) version of "CreateFile", which is a standard for the character encoding system. The characters encoded using ANSI standard are 1 byte long compared to the 2 bytes long Unicode encoded characters. Meaning the ANSI standard has a maximum characterset of 255 characters while the UNICODE standard has a maximum characterset of 65,536 characters <a href="https://ehsanakhgari.org/article/visual-c/2008-06-21/unicode" target="_blank"> (Akhgari,  2008)</a>. The Win32 API documentation for "CreateFileA" states that it "Creates or opens a file...(and) The function returns a handle that can be used to access the file...". The call to "CreateFileA" function is made accordingly (in the red box):
@@ -73,7 +73,7 @@ Figure 1: CreateFileA - Opening "Keyfile.dat" and Returning a file handle
 
  
  In the screenshot above, we can see that before the CreateFileA call, the parameters for that function are pushed onto the stack. OllyDbg has cleverly annotated them. Comparing it to the API documentation, we can see that the function parameters are passed in reverse order. <a href="https://blogs.msdn.microsoft.com/oldnewthing/20040108-00/?p=41163/" target="_blank">Chen 2004</a>, from MSDN blogs, describes that parameters are passed in reverse order (in reference to CDECL calling convention)"...so that the first parameter is nearest to top-of-stack...". Thinking back to how the stack works, it does sort of make sense?, the Last element In would be the First to be Out (LIFO) <a href="https://en.wikipedia.org/wiki/LIFO_%28computing%29
-" target="_blank">(Wikipedia, 2018)</a>. If you read the API reference for CreateFileA we can see that in order to create a file we need to pass several parameters, among them is a file name (lpFileName).  The filename that is passed for this particular call is "keyfile.dat". For the sake of the tutorial and the simpleness of this crackme, we can assume that this filename confirms that the license key is being stored locally and in this file. The CreateFileA API reference mentions that it returns either a file handle or a "-1" using the EAX register. Meaning, if the CreateFileA function was able to open "Keyfile.dat", it would return the handle to that file in the EAX register and if it did not, it would return "-1".
+" target="_blank">(Wikipedia, 2018)</a>. If you read the API reference for CreateFileA we can see that in order to create a file we need to pass several parameters, among them is a file name (lpFileName).  The filename that is passed to this particular call is "keyfile.dat". For the sake of the tutorial and the simpleness of this crackme, we can assume that this filename confirms that the license key is being stored locally and in this file. The CreateFileA API reference mentions that it returns either a file handle or a "-1" using the EAX register. Meaning, if the CreateFileA function was able to open "Keyfile.dat", it would return the handle to that file in the EAX register and if it did not, it would return "-1".
 
 Next, there is a compare instruction (CMP), taking the EAX register and "-1" as operands. It compares the content of the operands, specifically, it performs a logical AND operation (please refer to an X86 Opcode <a href="https://c9x.me/x86/" target="_blank">manual</a>). Based on the result of the operation, flags such as the ZF(Zero), SF(Signed) and PF(Parity) flags are set in the EFLAGs register. In reference to the mentioned x86 opcode manual (JCC section) the JNE - Jump if Not Equal (opcode 75) instruction jumps to the location passed as its operand (0040109A), if the Zf(zero) flag equal to 0 or the CMP/previous operation changed the state of the Z(zero) flag to 0(zero). Simply, in this case, if EAX did not equal to "-1" in the previous CMP operation then it jumps to 0040109A. This is done to check if the license key file is present.
 
