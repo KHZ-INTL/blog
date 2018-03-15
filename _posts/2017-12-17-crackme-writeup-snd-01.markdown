@@ -113,15 +113,20 @@ Figure 4: ReadFile - Test eax:eax = 1; zf=0, jmp taken
 
 
 ##### License Validation algorithm
-Successfully taking the jump at JNE after the Test operation, we land at 0x4010B4, and avoided the licensing error. This section may look chunky and complex. To get a sense of what it does we can use some basic analysis strategy. It is helpful to start by observing what this section of code does in general and then the specifics. We can do this by first taking a look where the jumps leads to and what sort of functions are called. Refering to figure 3, the first jump, JL (Jump if Lower) at 0x04010BF and as well as the JL at 0x04010D6 leads to another licensing error. 
+Successfully taking the jump at JNE after the Test operation, we land at 0x4010B4, and avoided the licensing error. This section may look chunky and complex. To get a sense of what it does we can use some basic analysis strategy. It is helpful to start by observing what this section of code does in general and then the specifics. We can do this by first taking a look where the jumps leads to and what sort of functions are called. Figure 3 shows an outline of the jumps. To pass the licensing algorithm and pass the checks, the jump at 0x04010C8 should be taken and the prevous jump instruction should be avoided. starting from the beginning of the algorithm (0x04010B4). The first two instruction is <a href="https://c9x.me/x86/html/file_module_x86_id_330.html" target="_blank">XOR</a>, or logical exclusive OR. For each bits of the operands (EBX, EBX), if either are 1, the resulting bit is set to 1, if both are 1 the resulting bit is set to 0 and if both are 0, the resulting bit is also set to 0. Since the XOR operands are the same the resulting bits would be 0. The EAX register is cleared with 0s, cleared to have it prepared for future use. XOR instruction is followed by CMP, it compares "DWORD PTR DS:[0x0402173]" and 10h. The beginning of the first operand "DWORD"(Double Word) specifies the amount of data, 2 words (4 bytes or 32 bits) to be selected from the location pointed by "PTR DS:[0x0402173]". From the
 
 
-Figure 3: License Validation Algorithm
+Refering to figure 4, the first jump, JL (Jump if Lower) at 0x04010BF and as well as the JL at 0x04010D6 leads to another licensing error.  
+
+
+Figure 3: License Validation Algorithm Jump Outline
+![SnD1-CrackMe-License Validation-algorithm](/assets/images/snd1/LIC-alg.png)
+
+Figure 4: License Validation Algorithm
 ![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-licensing-algoriythm.png)
    
 
-Figure 4: License Validation Algorithm Jump Outline
-![SnD1-CrackMe-License Validation-algorithm](/assets/images/snd1/LIC-alg.png)
+
 
 
 
