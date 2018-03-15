@@ -115,10 +115,13 @@ Figure 4: ReadFile - Test eax:eax = 1; zf=0, jmp taken
 ##### License Validation algorithm
 Successfully taking the jump at JNE after the Test operation, we land at 0x4010B4, and avoided the licensing error. This section may look chunky and complex. To get a sense of what it does we can use some basic analysis strategy. It is helpful to start by observing what this section of code does in general and then the specifics. We can do this by first taking a look where the jumps leads to and what sort of functions are called. Refering to figure 3, the first jump, JL (Jump if Lower) at 0x04010BF and as well as the JL at 0x04010D6 leads to another licensing error. 
 
-Figure 3: License validation Algorithm
+
+Figure 3: License Validation Algorithm
 ![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-licensing-algoriythm.png)
    
 
+Figure 4: License Validation Algorithm Jumps Outline
+![SnD1-CrackMe-License Validation-algorithm](/assets/images/snd1/LIC-alg.png)
 
 
 
