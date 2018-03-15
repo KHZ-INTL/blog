@@ -120,7 +120,7 @@ Figure 3: License Validation Algorithm
 ![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-licensing-algoriythm.png)
    
 
-Figure 4: License Validation Algorithm Jumps Outline
+Figure 4: License Validation Algorithm Jump Outline
 ![SnD1-CrackMe-License Validation-algorithm](/assets/images/snd1/LIC-alg.png)
 
 
