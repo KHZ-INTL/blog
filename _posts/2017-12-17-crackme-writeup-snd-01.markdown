@@ -5,12 +5,12 @@ date:   2017-11-17 10:18:00
 categories: Crackme SnD Writeup  
 ---
 
-The objective of this Crack-Me is to get the success message by either validating a license key from a file or patching the execution flow of the program. 
+The objective of this Crack-Me is to get flag/ the success message by either validating a license key from a file or patching the execution flow of the program. You may use any other methods. 
 
 Crack-Me: Crack-Me from Search and Destroy (SnD) Reversing Tutorial by Lena #2
 
 ###### A personal note
-At the time of writing of this write-up, I had moved from Windows to Linux OS. Some resources were not available. However, necessary resources are included to compensate. The pictures/screenshots may look different but please use memory addresses as a reference for navigating in between them.   
+At the time of writing of this write-up, I had moved from Windows to Linux OS. Some resources were not available. However, necessary resources were included to compensate. The pictures/screenshots may look different but please use memory addresses as a reference for navigating in between them.   
 
 ##### Tl;dr:
 Summary
@@ -38,7 +38,7 @@ for each_letter/character in licenseKey:
 		ESI = ESI + 1
 {% endhighlight %}
 
-##### Solving the Crac-kMe
+##### Solving the Crack-Me
 Solving a simple Crack-Me challenge like this can be achieved using several methods. Methods such as patching the execution flow of the program by altering the operation codes (opcode) and/or devising a license key based on the licensing algorithm. This write-up will focus on the latter option. 
 
 In devising a license key the structure and as well as relevant parameters needs to be considered. These include:
@@ -67,7 +67,7 @@ If a program needs to write to and read from a file, it needs to call a predefin
 
 If you are using Olly Debugger there are some plugins that can help with this, such as <a href="http://www.openrce.org/downloads/details/211/APIFinder" target="_blank">APIFinder</a> by Tomisslav Pericin. There are plugins available for other debuggers, you will need to do a google search. For example debuggerName API finder/set breakpoint.
 
- If we search the disassembled CrackMe executable for calls to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx" target="_blank">CreateFile</a> function. We come up with a call to the "CreateFileA" instead of "CreateFile". The "CreateFileA" is the American National Standards Institute(ANSI) version of "CreateFile", which is a standard for the character encoding system. The characters encoded using ANSI standard are 1 byte long compared to the 2 bytes long Unicode encoded characters. Meaning the ANSI standard has a smaller characterset compared to Unicode<a href="https://ehsanakhgari.org/article/visual-c/2008-06-21/unicode" target="_blank"> (Akhgari,  2008)</a>.
+ If we search the disassembled CrackMe executable for calls to <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363858(v=vs.85).aspx" target="_blank">CreateFile</a> function. We come up with a call to the "CreateFileA" instead of "CreateFile". The "CreateFileA" is the American National Standards Institute(ANSI) version of "CreateFile", which is a standard for the character encoding system. The characters encoded using ANSI standard are 1 byte long compared to the 2 bytes long Unicode encoded characters. Meaning the ANSI standard has a smaller characterset compared to Unicode <a href="https://ehsanakhgari.org/article/visual-c/2008-06-21/unicode" target="_blank">(Akhgari,  2008)</a>.
  
 The Win32 API documentation for "CreateFileA" states that it "Creates or opens a file...(and) The function returns a handle that can be used to access the file...". The call to "CreateFileA" function is made accordingly (in the red box) refer to figure 1:
  
@@ -113,18 +113,32 @@ Figure 4: ReadFile - Test eax:eax = 1; zf=0, jmp taken
 
 
 ##### License Validation algorithm
-Successfully taking the jump at JNE after the Test operation, we land at 0x4010B4, and avoided the licensing error. This section may look chunky and complex. To get a sense of what it does we can use some basic analysis strategy. It is helpful to start by observing what this section of code does in general and then the specifics. We can do this by first taking a look where the jumps leads to and what sort of functions are called. Figure 3 shows an outline of the jumps. To pass the licensing algorithm and pass the checks, the jump at 0x04010C8 should be taken and the prevous jump instruction should be avoided. starting from the beginning of the algorithm (0x04010B4). The first two instruction is <a href="https://c9x.me/x86/html/file_module_x86_id_330.html" target="_blank">XOR</a>, or logical exclusive OR. For each bits of the operands (EBX, EBX), if either are 1, the resulting bit is set to 1, if both are 1 the resulting bit is set to 0 and if both are 0, the resulting bit is also set to 0. Since the XOR operands are the same the resulting bits would be 0. The EAX register is cleared with 0s, cleared to have it prepared for future use. XOR instruction is followed by CMP, it compares "DWORD PTR DS:[0x0402173]" and 10h. The beginning of the first operand "DWORD"(Double Word) specifies the amount of data, 2 words (4 bytes or 32 bits) to be selected from the location pointed by "PTR DS:[0x0402173]". From the
+
+Figure 5: License Validation Algorithm
+![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-licensing-algoriythm.png)
+   
+Successfully taking the jump at JNE after the Test operation, we land at 0x4010B4, and avoided the licensing error. This section may look chunky and complex. To get a sense of what it does we can use some basic analysis strategy. It is helpful to start by observing what this section of code does in general and then the specifics. We can do this by first taking a look where the jumps leads to and what sort of functions are called. Figure 6 shows an outline of the jumps. Refering to figure 6, below, to get to the flag or the success message we need to take the jump at 0x04010C8. Now having a rough idea of where jump instructions should be taken and avoided, we can take a closer look at the algorithm. 
+
+Figure 6: License Validation Algorithm Jump Outline
+![SnD1-CrackMe-License Validation-algorithm](/assets/images/snd1/LIC-alg.png)
+
+
+Starting from the beginning of the algorithm (0x04010B4). The first two instruction is <a href="https://c9x.me/x86/html/file_module_x86_id_330.html" target="_blank">XOR</a>, or logical exclusive OR. It basically does the following: for each bits of the operands (EBX, EBX), 
++ if either are 1, the resulting bit is set to 1,
++ if both are 1 the resulting bit is set to 0, and
++ if both are 0, the resulting bit is also set to 0.
+
+ Since the XOR operands are the same the resulting bits would be 0. This clears the EAX register with 0s, it is cleared to have it prepared for future use. 
+ 
+ Next, a CMP instruction. The CMP instruction compares "DWORD PTR DS:[0x0402173]" and 10h. The beginning of the first operand "DWORD"(Double Word) specifies the amount of data, 2 words (4 bytes or 32 bits) to be selected from the location pointed by "PTR DS:[0x0402173]". If you remeber from the ReadFile call, this address was passed as a parameter for nNumberOfBytesRead: offset [00402173]. In simple terms, the win32 api mentions that the total number of bytes read from the file will be stored at location pointed by nNumberOfBytesRead. The second operand is immediate/constant value, in Olly Debugger the immediate/constant values are presented in hex. Thus 10 hex in decimal would be 16. The total number of bytes read from the file is compared with 16 bytes or 16 characters. The next instruction is JL SHORT 0x04010F7. This instruction Jumps to location pointed by its operand if the previous
 
 
 Refering to figure 4, the first jump, JL (Jump if Lower) at 0x04010BF and as well as the JL at 0x04010D6 leads to another licensing error.  
 
 
-Figure 3: License Validation Algorithm Jump Outline
-![SnD1-CrackMe-License Validation-algorithm](/assets/images/snd1/LIC-alg.png)
 
-Figure 4: License Validation Algorithm
-![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-licensing-algoriythm.png)
-   
+
+
 
 
 
@@ -135,6 +149,7 @@ Calling convention - ASM
 http://unixwiz.net/techtips/win32-callconv-asm.html
 
 
+Revision on basics: http://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html
 
  
 
