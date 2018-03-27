@@ -150,7 +150,7 @@ Figure 8: The Flag - Success Message
 
 
 
-##### Some useful Resource/s
+##### Useful Resource/s
 
 
 Calling convention - ASM: <a href="http://unixwiz.net/techtips/win32-callconv-asm.html" target="_blank">Unixwiz</a>
