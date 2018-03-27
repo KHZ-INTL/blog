@@ -6,11 +6,11 @@ markdown: kramdown
 highlighter: rouge
 logo: false
 paginate: 15
-baseurl: /
-domain_name: 'http://github.com/khz-intl/khz-intl.github.io'
-google_analytics: 'UA-XXXXXXXX-X'
+baseurl: '/'
+domain_name: 'http://www.khz-intl.github.io'
+google_analytics: 'UA-116486746-1'
 plugins: [jekyll-paginate]
 
 # Details for the RSS feed generator
-url:            'blog url'
+url:            'https://khz-intl.github.io/'
 author:         'Hossein Anvari'
