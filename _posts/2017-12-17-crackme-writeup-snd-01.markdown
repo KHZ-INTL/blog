@@ -5,7 +5,7 @@ date:   2017-11-17 10:18:00
 categories: Crackme SnD Writeup  
 ---
 
-The objective of this Crack-Me is to get flag/ the success message by either validating a license key from a file or patching the execution flow of the program. You may use any other methods. 
+The objective of this Crack-Me is to get the flag/ the success message by either validating a license key from a file or patching the execution flow of the program. You may use any other methods. 
 
 Crack-Me: Crack-Me from Search and Destroy (SnD) Reversing Tutorial by Lena #2
 
@@ -130,26 +130,31 @@ Starting from the beginning of the algorithm (0x04010B4). The first two instruct
 
  Since the XOR operands are the same the resulting bits would be 0. This clears the EAX register with 0s, it is cleared to have it prepared for future use. 
  
- Next, a CMP instruction. The CMP instruction compares "DWORD PTR DS:[0x0402173]" and 10h. The beginning of the first operand "DWORD"(Double Word) specifies the amount of data, 2 words (4 bytes or 32 bits) to be selected from the location pointed by "PTR DS:[0x0402173]". If you remeber from the ReadFile call, this address was passed as a parameter for nNumberOfBytesRead: offset [00402173]. In simple terms, the win32 api mentions that the total number of bytes read from the file will be stored at location pointed by nNumberOfBytesRead. The second operand is immediate/constant value, in Olly Debugger the immediate/constant values are presented in hex. Thus 10 hex in decimal would be 16. The total number of bytes read from the file is compared with 16 bytes or 16 characters. The next instruction is JL SHORT 0x04010F7. This instruction Jumps to location pointed by its operand if the previous
-
-
-Refering to figure 4, the first jump, JL (Jump if Lower) at 0x04010BF and as well as the JL at 0x04010D6 leads to another licensing error.  
-
-
-
-
-
-
-
-
-
-
-
-Calling convention - ASM
-http://unixwiz.net/techtips/win32-callconv-asm.html
-
-
-Revision on basics: http://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html
-
+ Next, a CMP instruction. The CMP instruction compares "DWORD PTR DS:[0x0402173]" and 10h. The beginning of the first operand "DWORD"(Double Word) specifies the amount of data, 2 words (4 bytes or 32 bits) to be selected from the location pointed by "PTR DS:[0x0402173]". If you remeber from the ReadFile call, this address was passed as a parameter for nNumberOfBytesRead: offset [00402173]. In simple terms, the win32 api mentions that the total number of bytes read from the file will be stored at location pointed by nNumberOfBytesRead. The second operand is immediate/constant value, in Olly Debugger the immediate/constant values are presented in hex. Thus 10 hex in decimal would be 16. The total number of bytes read from the file is compared with 16 bytes or 16 characters. The next instruction is JL SHORT 0x04010F7. If the total number of bytes read from file is less than 16 bytes, or nNumberofBytesRead is less than 16 then the jump would be taken. The jump leads to invalid license error. This means that license key has to be 16 bytes long. Populate the licensekey created with random characters, preferably at least 16 characters. 
  
+ The next instruction is: "MOV AL, BYTE PTR DS:[EBX+40211A]. The MOV instruction copies data from source to destination: MOV Destination, Source. The source/data to be copied is: BYTE PTR DS:[EBX+40211A]. BYTE PTR, specifies that 1 byte should be selected/copied from the DS (Data Segment) with the offset of [EBX+40211A]. We know that 0x40211A is the memory location that was passed as the buffer (lpBuffer) argumnent when the ReadFile was called. This is the location where the read data from license key is stored temporarily. EBX register was cleared or set to 0 at the beginning, so :[EBX=0 + 0x40211A] = 0x40211A. This points to the memory location at which the license key is stored, the first character of the license key. Basically it copies the first character of the license key to AL. AL is the lower 8 bits of the AX component of EAX register. Please refer to  figure 7 and the <a href="http://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html" target="_blank">basics</a> if need to.
+
+ Figure 7: AX component/subsection of EAX register courtesy of c-jump.com
+ <a href="http://www.c-jump.com/bcc/c261c/ASM/Instructions/lecture.html" target="_blank">
+ <img alt="Subcomponent of EAX register: AX" src="http://www.c-jump.com/bcc/c261c/asm_images/eax.png"/></a>
+ 
+Next, "CMP AL,0". The first character of the license key in AL is compared against 0h. Refering to a hex to ascii conversion <a href="http://www.asciitable.com/" target="_blank">table</a>, 0 hex is 0 in ascii. Next, if AL equals to 0, the jump will take place, jumping to 0x04010D3. Where ESI is compared against 8h or 8 decimal. There if ESI was lower than 8, it jumps to invalid license error but if it equals or more than 8 it would jump to Valid license key message. However, if AL does not equal to 0, then it would INC (increase) EBX with 1 and then jump back up to 0x4010C1. There [EBX=1 + 0x40211A] = 2nd chracter of license key would be copied to AL. From this we can see that it is a loop that keeps checking each character of the license key. However, if the jump at 0x4010C9 does not take place then AL would be compared with 47h or "G" in ascii. If AL does not equal to "G" then it would continue to increase EBX by one and continue the loop. If AL does equal to "G" then it would increase ESI and EBX by 1. This loop will continue to occour until AL equals to 0. AL will equal to 0 if we reach the end of license key, as there are no data past the license key. From this we know that:
++ the license key needs to be 16 bytes/characters long, 
++ it has to contain 8 * 47h or "G", and
++ there should be no 0s. 
+
+Now if you create a license key following the mentioned rules, you will be greeted with a valid license key message, or the flag of this crack me. Congratualations.
+
+Figure 8: The Flag - Success Message
+![SnD1-CrackMe-The Flag - Success Message](/assets/images/snd1/snd1-success.png)
+
+
+
+##### Some useful Resource/s
+
+
+Calling convention - ASM: <a href="http://unixwiz.net/techtips/win32-callconv-asm.html" target="_blank">Unixwiz</a>
+
+
+
 
