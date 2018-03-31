@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Crack-Me Writeup/Personal notes - SnD Reversing Tutorial #2"
+title:  "Crack-Me Writeup - SnD Reversing Tutorial #2"
 date:   2017-11-17 10:18:00
 categories: Crackme SnD Writeup  
 ---
