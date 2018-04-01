@@ -37,7 +37,7 @@ A good place to initate our reasearch is by reading the description of the chall
 Figure 1: Challenge Description
 ![fd-pwnablekr-challenge-description](/assets/images/fd-pwnablekr/fd_chall_desc.png)
 
-In the description, it mentions "...What is a file descriptor in linux?". We can guess that the challenge has something to do with file descriptors. In simple terms, a file descriptor is a handle that can be used to access a file or an input/output device. In linux, by default on creation of a process, with the exception of daemons, three standard/default streams are opened for it: Standard Imput, Standard Output and Standard Error. These streams can also be refered numerically:
+In the description, it mentions "...What is a file descriptor in linux?". We can guess that the challenge has something to do with file descriptors. In simple terms, a file descriptor is a handle that can be used to access a file or an input/output device. In linux, by default on creation of a process, with the exception of daemons, three standard/default streams are opened for it: Standard Input, Standard Output and Standard Error. These streams can also be refered to numerically:
 + Standard input or stdin: 0
 + Standard output or stdout: 1
 + Standard Error or stderr: 2
@@ -71,5 +71,22 @@ If we do a listing (ls) of the current dirrectory we see the:
 + fd.c: Challenge source code and
 + Flag
 
+One way of analysing the challenge (binary) is to do a static analysis. With this method we try to get as much information from the binary without having it running. Sometimes  a program may behave differently when its running, for example some viruses. If we did not have the source code available we could use the "strings" command to extract the strings/texts from the binary. Sometimes with this method we can extract the function names, hardcoded texts, section names and etc. Running the strings command for the fd binary returns some useful information, refer to figure 3.
 
+Figure 3: Strings analysis of fd binary
+![strings-analysis-of-fd-binary](/assets/images/fd-pwnablekr/fd-strings_analysis.png)
 
+The strings analysis of the fd binary shows some intresting texts. For example, "good job :)", "learn about Linux file IO" and "LETMEWIN". They sound like a message you would get if you validate a correct or an invalid password/input. Also there is a reference to "atoi". If you are not familiar with programming or atoi function, basically it extracts numbers from a given string. There is also "/bin/cat flag". The cat command prints the file its given as its argument. In this case it prints the flag file. If you scroll down, near the end there is "main". This may refer to the main function of the program. We can search for this function when debugging in our dynamic analysis. Finally, there is also "pass argv[1] a number". This essentially translates to: when launching the program, you may have to pass a number. Argv is a structure where arguments are stored. When a program is launched, in this case, the first argument, argv[0] is the name of binary it self, the second argument is argv[1] is the argument passed when launched. From before we found a call to "atoi". From this we can guess that the program tries to extract numbers from the user input or argv[1].
+
+Since we have access to the source code of the binary we could also analyse that. Open the source code in vim:
+
+{% highlight bash %}
+    vim fd.c
+{% endhighlight %}
+
+The souce file should look like the one in figure 4.
+
+Figure 4: Source code of fd shown in vim editor- vim fd.c
+![strings-analysis-of-fd-binary](/assets/images/fd-pwnablekr/fd-source-file-vim.png)
+
+The first three lines, the includes defines what libararies to be imported for later use. The 4th line defines a variable called buf with a size of 32 bytes.
