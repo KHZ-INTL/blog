@@ -5,7 +5,7 @@ date:   2018-03-26 10:18:00
 categories: capture-the-flag pawnablekr Writeup  
 ---
 
-# writing, in progress.
+#### writing, in progress.
 
 The objective of this challenge (fd - pwnable.kr) is to capture the flag.
 
@@ -37,16 +37,39 @@ A good place to initate our reasearch is by reading the description of the chall
 Figure 1: Challenge Description
 ![fd-pwnablekr-challenge-description](/assets/images/fd-pwnablekr/fd_chall_desc.png)
 
-In the description, it mentions "...What is a file descriptor in linux?". We can guess that the challenge has something to do with file descriptors. The OpenBSD/Linux <a href="https://en.wikipedia.org/wiki/File_descriptor" target="_blank">manual </a>
+In the description, it mentions "...What is a file descriptor in linux?". We can guess that the challenge has something to do with file descriptors. In simple terms, a file descriptor is a handle that can be used to access a file or an input/output device. In linux, by default on creation of a process, with the exception of daemons, three standard/default streams are opened for it: Standard Imput, Standard Output and Standard Error. These streams can also be refered numerically:
++ Standard input or stdin: 0
++ Standard output or stdout: 1
++ Standard Error or stderr: 2
 
-(section 4), describes a file descriptor (in short "fd") as a non zero integer used as a handle to acess files or input/output devices. Each process with the exception of deamons have three standard file descriptors
+With these streams a program or process can interact with its enviroment. With stdin the program can take input, for example with the use of "cin" in c++. With stdout and stderr information can be used to displayed to the console.
 
-Every program:
-    By default, on creation of each process with the exception of daemons, three stremes opened for it: input, output and error.
+If you require further explanation please refer to:
++ The Linux <a href="http://man7.org/linux/man-pages/man3/stdout.3.html#SYNOPSIS " target="_blank">manual </a>(section 4) on "fd, stdin, stdout, stderr" or
++ Holidaylvr's <a href="https://www.youtube.com/watch?v=EqndHT606Tw" target="_blank">video</a> tutorial "fd, dup()..." on youtube. 
 
-http://man7.org/linux/man-pages/man3/stdout.3.html#SYNOPSIS 
+Now that we are familiar with file descriptor, lets take a look at the challenge.
 
+##### static analysis
+Lets connect to the challenge server with the given ssh command:
+{% highlight bash %}
+    ssh fd@pwnable.kr -p2222
+{% endhighlight %}
 
+The ssh command connects to "fd@pwnable.kr" using the 2222 port. Use the password ("guest") to sign into the server when you're asked. Refer to figure 2, below.
+
+Figure 2: Connecting to the fd challenge server
+![fd-pwnablekr-challenge-description](/assets/images/fd-pwnablekr/connecting-to-fd.png)
+
+The server is running on linux. We can use the following commands:
++ ls: List items in the current dirrctory
++ cd: Change dirrectory
++ vim: Edit/view text and source code files using the vim editor 
+
+If we do a listing (ls) of the current dirrectory we see the:
++ fd: Challenge binary,
++ fd.c: Challenge source code and
++ Flag
 
 
 
