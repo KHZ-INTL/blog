@@ -1,6 +1,6 @@
 name: Hossein Anvari
 description: Blogs of ideas and challenges
-meta_description: "Blogging about cracking licensing protection/crack-me challenges and abit of capture the flag"
+meta_description: "Blogging about Information Technology: Capture-The-Flag(CTF) challenges, Wargames and Programming"
 
 markdown: kramdown
 highlighter: rouge
