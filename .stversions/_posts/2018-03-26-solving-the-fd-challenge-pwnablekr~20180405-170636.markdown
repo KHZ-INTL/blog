@@ -89,35 +89,4 @@ The souce file should look like the one in figure 4.
 Figure 4: Source code of fd shown in vim editor- vim fd.c
 ![strings-analysis-of-fd-binary](/assets/images/fd-pwnablekr/fd-source-file-vim.png)
 
-###### A general understanding
-
-It is easier to understand if we tried to grasp what the code does in general and then the specifics. The code imports three headers and has 1 function named "main". In the main function something is read and stored from a file descriptor to a variable and it is compared with a hardcoded string "LETMEWIN". If the variable did equal then the flag is shown . If it did not, "learn about Linux file IO" message is shown. 
-
-###### The specifics
-Now that we have an understanding of what the code does in general, let's look at what each line of code do. 
-
-In the first three lines, 3 header are imported: stdio, stdlib and string.
-
-{% highlight c++ %}
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
-{% endhighlight %}
-
-<a href="http://www.cplusplus.com/" target="_blank"> C++.com</a> (2017) describes them accordingly. The first header is <a href="http://www.cplusplus.com/reference/cstio/" target="_blank">stdio</a>, it is used to perform input/output operations using the standard input, output and error streams. The next header <a href="http://www.cplusplus.com/reference/csstdlib/" target="_blank">stdlib</a>, it hosts several general purpose functions such as string conversions (atoi), dynamic memory management and integer arithmetics. Lastly, the <a href="http://www.cplusplus.com/reference/cstring" target="_blank">string</a> header is imported for it's string manipulation functions. 
-
-
-
-Next, an array named "buf" with a size of 32 elements is defined:
-
-{% highlight c++ %}
-    char buf[32];
-{% endhighlight %}
-
-Each elements was defined to be the type of Char. The Char property type is used to identify each elements as a Character type. A Char is one byte in size (8bits) and used to represent one character for example: "A", "!", or "{" (<a href="http://www.cplusplus.com/doc/tutorial/variables/" target="_blank">cpp.com</a>, 2017). To visualise an example of this please look at figure 5 below.
-
-
-
-On the 5th line a function named "main" is defined. It takes argc, argv and envp as parameters and returns an integer (a number). 
-
 The first three lines, the includes defines what libararies to be imported for later use. The 4th line defines a variable called buf with a size of 32 bytes.
