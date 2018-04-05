@@ -96,7 +96,7 @@ It is easier to understand if we tried to grasp what the code does in general an
 ###### The specifics
 Now that we have an understanding of what the code does in general, let's look at what each line of code do. 
 
-In the first three lines, 3 header are imported: stdio, stdlib and string.
+In the 3 three lines, 3 header are imported: stdio, stdlib and string.
 
 {% highlight c++ %}
     #include <stdio.h>
@@ -104,7 +104,7 @@ In the first three lines, 3 header are imported: stdio, stdlib and string.
     #include <string.h>
 {% endhighlight %}
 
-<a href="http://www.cplusplus.com/" target="_blank"> C++.com</a> (2017) describes them accordingly. The first header is <a href="http://www.cplusplus.com/reference/cstio/" target="_blank">stdio</a>, it is used to perform input/output operations using the standard input, output and error streams. The next header <a href="http://www.cplusplus.com/reference/csstdlib/" target="_blank">stdlib</a>, it hosts several general purpose functions such as string conversions (atoi), dynamic memory management and integer arithmetics. Lastly, the <a href="http://www.cplusplus.com/reference/cstring" target="_blank">string</a> header is imported for it's string manipulation functions. 
+<a href="http://www.cplusplus.com/" target="_blank"> C++.com</a> (2017) describes them accordingly. The <a href="http://www.cplusplus.com/reference/cstio/" target="_blank">stdio</a> header, it is imported to use its predefined functions to perform input/output operations using the standard input, output and error streams. The <a href="http://www.cplusplus.com/reference/csstdlib/" target="_blank">stdlib</a> header hosts several general purpose functions such as string conversions (atoi), dynamic memory management and integer arithmetics. The <a href="http://www.cplusplus.com/reference/cstring" target="_blank">string</a> header is imported for it's string manipulation functions. 
 
 
 
@@ -114,10 +114,12 @@ Next, an array named "buf" with a size of 32 elements is defined:
     char buf[32];
 {% endhighlight %}
 
-Each elements was defined to be the type of Char. The Char property type is used to identify each elements as a Character type. A Char is one byte in size (8bits) and used to represent one character for example: "A", "!", or "{" (<a href="http://www.cplusplus.com/doc/tutorial/variables/" target="_blank">cpp.com</a>, 2017). To visualise an example of this please look at figure 5 below.
+Each elements is defined to be the type of Char. The Char property is used to identify each elements as a Character type. A Char is one byte in size (8bits) and used to represent one character for example: "A", "!", or "{" (<a href="http://www.cplusplus.com/doc/tutorial/variables/" target="_blank">C++.com</a>, 2017). To visualise an example of this please look at figure 5 below.
 
+           1     2     3     4     5     6    ...   32
+        |-----------------------------------------------|
+buf =   | "A" | "!" | ">" | "*" | "x" | ";" | ... | "&" |
+        |-----------------------------------------------|
 
 
 On the 5th line a function named "main" is defined. It takes argc, argv and envp as parameters and returns an integer (a number). 
-
-The first three lines, the includes defines what libararies to be imported for later use. The 4th line defines a variable called buf with a size of 32 bytes.
