@@ -121,17 +121,36 @@ Figure 5: The buf array visualised - diagram design inspired by c++.com
 
 On the 5th line a function named "main" is defined. It takes argc, argv and envp as parameters and returns an integer (a number). Argc (argument count) is an integer that holds the count, the total number of arguments passed from the command line. By default the name of the program is considered an argument thus argc is incremented by 1 and preappended to argv. Argv (argument vector) is an array that holds the arguments passed from command line. The first argument passed by the user will be the 2nd element of argv. This is because the name of the program is automatically prepended. Envp is an array where enviroment strings are stored/referenced (<a href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa299386(v=vs.60)" target="_blank">Microsoft</a>, 2006).
 
-The main function consist of many operations. The first operation:
+The main function consist of many operations. They are described chronologically: 
 
+The first operation:
 {% highlight c++ %}
+
     if(argc<2){
         printf("pass argv[1] a number\n");
         return 0;
     }
 {% endhighlight %}
 
-
  The first operation checks if argc is less than 2. This is to check if the user has passed a password or the required input. To get argc to equal 2 or more, one or more arguments needs to be passed when launching the program. Keeping in mind that by default argc=1 since the name of the program is considered an argument. If argc is less than 2 or the user did not pass an argument, then a message is printed "pass argv[1] a number" and the program exits.
+
+{% highlight c++ %}
+
+    int fd = atoi(argv[1]) - 0x1234;    
+{% endhighlight %}
+
+In this operation two things occur. First a variable named fd with a type of integer is defined. Imediately it is initialised with a subtraction operation. The first operand of subtraction is argv[1] or user input and the second operand is a number in hex. It is in hex since it has the "0x" prefix. To convert this to decimal, we can use the int() conversion function from python. This function takes in a string and its base and returns it in base10 form. The hex number equates to 4660 in decimal, see below:
+
+{% highlight python %}
+
+    int("0x1234", 16)
+    = 4660
+{% endhighlight %}
+
+If you remember reading about file descriptors, they were refered to as fd for short. This variable might be used as a reference to a fd.
+
+Next, another variable named len is defined. It is iniatlised with zero but on the next line it is set ...
+
 
 
 ##### Found an error or like what you read?
