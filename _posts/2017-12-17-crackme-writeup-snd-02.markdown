@@ -149,6 +149,8 @@ Figure 8: The Flag - Success Message
 ![SnD1-CrackMe-The Flag - Success Message](/assets/images/snd1/snd1-success.png)
 
 
+##### Found an error or like what you read?
+Please navigate to <a href="khz-intl.github.io/about" target="_blank">About me</a> page to get in touch. Thanks in advance.
 
 ##### Useful Resource/s
 
