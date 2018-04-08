@@ -116,10 +116,7 @@ Next, an array named "buf" with a size of 32 elements is defined:
 
 Each elements is defined to be the type of Char. The Char property is used to identify each elements as a Character type. A Char is one byte in size (8bits) and used to represent one character for example: "A", "!", or "{" (<a href="http://www.cplusplus.com/doc/tutorial/variables/" target="_blank">C++.com</a>, 2017). To visualise an example of this please look at figure 5 below.
 
-           1     2     3     4     5     6    ...   32
-        |-----------------------------------------------|
-buf =   | "A" | "!" | ">" | "*" | "x" | ";" | ... | "&" |
-        |-----------------------------------------------|
-
+Figure 5: The buf array visualised
+![diagram: a graphical visualisation of the buf array](/assets/images/fd-pwnablekr/buf-array-fd.jpg)
 
 On the 5th line a function named "main" is defined. It takes argc, argv and envp as parameters and returns an integer (a number). 
