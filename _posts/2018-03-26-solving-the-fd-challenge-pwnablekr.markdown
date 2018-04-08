@@ -5,7 +5,7 @@ date:   2018-03-26 10:18:00
 categories: capture-the-flag pawnablekr Writeup  
 ---
 
-#### writing, in progress.
+##### This blog is incomplete. In progress.
 
 The objective of this challenge (fd - pwnable.kr) is to capture the flag.
 
