@@ -225,7 +225,7 @@ If you did everything right, you should be greeted with a success message and th
 Figure 6: The success message and the flag printed out to the console.
 ![The success message: 'Good job :)', the flag 'mommy! I think I know what a file descriptor is!!'](/assets/images/fd-pwnablekr/fd-success.png)
 
-Dont forget to validate your flag on <a href="www.pwnable.kr/play.php" target="_blank">Pwnable.kr</a>:
+Dont forget to validate your flag on <a href="http://www.pwnable.kr/play.php" target="_blank">Pwnable.kr</a>:
 
 Figure 7: Validating the flag on Pwnable.kr (first challenge):
 ![](/assets/images/fd-pwnablekr/fd-validate.png)
@@ -233,5 +233,3 @@ Figure 7: Validating the flag on Pwnable.kr (first challenge):
 
 
 
-##### Found an error or like what you read?
-Please navigate to <a href="khz-intl.github.io/about" target="_blank">About me</a> page to get in touch. Thanks in advance.

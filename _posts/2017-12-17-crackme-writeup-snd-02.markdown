@@ -21,7 +21,7 @@ The licensing algorithm checks the Keyfile.dat file for a valid license key. A l
 
 A valid license key: "GGGGGGGGGG000000".
 
-The license validation algorithm in psudo python:
+The license validation algorithm in pseudo python:
 
 {% highlight python %}
 ESI = 0
@@ -55,7 +55,7 @@ This is a simple Crack-Me challenge, thus it would not handle its licensing data
 
 ##### CreateFileA
 
-Understanding how the software interacts with the OS helps in identifiying how the licensing data is stored. Programs do not have direct access to the storage device for reading and writing data and thus it will need to go through the Kernal. In this scenario, the kernel is simply an interface that takes in write/read requests and manages the underlying low-level operations. To access the kernal for reading/writing operations, the Windows 32 (win32) API library allows users to call and utilize its predefined functions and classes. The win32 API library documentation can be found:
+Understanding how the software interacts with the OS helps in identifying how the licensing data is stored. Programs do not have direct access to the storage device for reading and writing data and thus it will need to go through the Kernel. In this scenario, the kernel is simply an interface that takes in write/read requests and manages the underlying low-level operations. To access the kernel for reading/writing operations, the Windows 32 (win32) API library allows users to call and utilize its predefined functions and classes. The win32 API library documentation can be found:
 + <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn933214(v=vs.85).aspx" target="_blank">View on Microsoft Developers Network</a>
 + <a href="http://laurencejackson.com/win32/index.html" target="_blank">Download Win32 API documentation from Laurence Jackson website</a>
 + 
@@ -117,7 +117,7 @@ Figure 4: ReadFile - Test eax:eax = 1; zf=0, jmp taken
 Figure 5: License Validation Algorithm
 ![SnD1-CrackMe-CreateFile-annotated](/assets/images/snd1/snd1-licensing-algoriythm.png)
    
-Successfully taking the jump at JNE after the Test operation, we land at 0x4010B4, and avoided the licensing error. This section may look chunky and complex. To get a sense of what it does we can use some basic analysis strategy. It is helpful to start by observing what this section of code does in general and then the specifics. We can do this by first taking a look where the jumps leads to and what sort of functions are called. Figure 6 shows an outline of the jumps. Refering to figure 6, below, to get to the flag or the success message we need to take the jump at 0x04010C8. Now having a rough idea of where jump instructions should be taken and avoided, we can take a closer look at the algorithm. 
+Successfully taking the jump at JNE after the Test operation, we land at 0x4010B4, and avoided the licensing error. This section may look chunky and complex. To get a sense of what it does we can use some basic analysis strategy. It is helpful to start by observing what this section of code does in general and then the specifics. We can do this by first taking a look where the jumps leads to and what sort of functions are called. Figure 6 shows an outline of the jumps. Referring to figure 6, below, to get to the flag or the success message we need to take the jump at 0x04010C8. Now having a rough idea of where jump instructions should be taken and avoided, we can take a closer look at the algorithm. 
 
 Figure 6: License Validation Algorithm Jump Outline
 ![SnD1-CrackMe-License Validation-algorithm](/assets/images/snd1/LIC-alg.png)
@@ -130,33 +130,27 @@ Starting from the beginning of the algorithm (0x04010B4). The first two instruct
 
  Since the XOR operands are the same the resulting bits would be 0. This clears the EAX register with 0s, it is cleared to have it prepared for future use. 
  
- Next, a CMP instruction. The CMP instruction compares "DWORD PTR DS:[0x0402173]" and 10h. The beginning of the first operand "DWORD"(Double Word) specifies the amount of data, 2 words (4 bytes or 32 bits) to be selected from the location pointed by "PTR DS:[0x0402173]". If you remeber from the ReadFile call, this address was passed as a parameter for nNumberOfBytesRead: offset [00402173]. In simple terms, the win32 api mentions that the total number of bytes read from the file will be stored at location pointed by nNumberOfBytesRead. The second operand is immediate/constant value, in Olly Debugger the immediate/constant values are presented in hex. Thus 10 hex in decimal would be 16. The total number of bytes read from the file is compared with 16 bytes or 16 characters. The next instruction is JL SHORT 0x04010F7. If the total number of bytes read from file is less than 16 bytes, or nNumberofBytesRead is less than 16 then the jump would be taken. The jump leads to invalid license error. This means that license key has to be 16 bytes long. Populate the licensekey created with random characters, preferably at least 16 characters. 
+ Next, a CMP instruction. The CMP instruction compares "DWORD PTR DS:[0x0402173]" and 10h. The beginning of the first operand "DWORD"(Double Word) specifies the amount of data, 2 words (4 bytes or 32 bits) to be selected from the location pointed by "PTR DS:[0x0402173]". If you remember from the ReadFile call, this address was passed as a parameter for nNumberOfBytesRead: offset [00402173]. In simple terms, the win32 api mentions that the total number of bytes read from the file will be stored at location pointed by nNumberOfBytesRead. The second operand is immediate/constant value, in Olly Debugger the immediate/constant values are presented in hex. Thus 10 hex in decimal would be 16. The total number of bytes read from the file is compared with 16 bytes or 16 characters. The next instruction is JL SHORT 0x04010F7. If the total number of bytes read from file is less than 16 bytes, or nNumberofBytesRead is less than 16 then the jump would be taken. The jump leads to invalid license error. This means that license key has to be 16 bytes long. Populate the license key created with random characters, preferably at least 16 characters. 
  
- The next instruction is: "MOV AL, BYTE PTR DS:[EBX+40211A]. The MOV instruction copies data from source to destination: MOV Destination, Source. The source/data to be copied is: BYTE PTR DS:[EBX+40211A]. BYTE PTR, specifies that 1 byte should be selected/copied from the DS (Data Segment) with the offset of [EBX+40211A]. We know that 0x40211A is the memory location that was passed as the buffer (lpBuffer) argumnent when the ReadFile was called. This is the location where the read data from license key is stored temporarily. EBX register was cleared or set to 0 at the beginning, so :[EBX=0 + 0x40211A] = 0x40211A. This points to the memory location at which the license key is stored, the first character of the license key. Basically it copies the first character of the license key to AL. AL is the lower 8 bits of the AX component of EAX register. Please refer to  figure 7 and the <a href="http://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html" target="_blank">basics</a> if need to.
+ The next instruction is: "MOV AL, BYTE PTR DS:[EBX+40211A]. The MOV instruction copies data from source to destination: MOV Destination, Source. The source/data to be copied is: BYTE PTR DS:[EBX+40211A]. BYTE PTR, specifies that 1 byte should be selected/copied from the DS (Data Segment) with the offset of [EBX+40211A]. We know that 0x40211A is the memory location that was passed as the buffer (lpBuffer) argument when the ReadFile was called. This is the location where the read data from license key is stored temporarily. EBX register was cleared or set to 0 at the beginning, so :[EBX=0 + 0x40211A] = 0x40211A. This points to the memory location at which the license key is stored, the first character of the license key. Basically it copies the first character of the license key to AL. AL is the lower 8 bits of the AX component of EAX register. Please refer to  figure 7 and the <a href="http://flint.cs.yale.edu/cs421/papers/x86-asm/asm.html" target="_blank">basics</a> if need to.
 
  Figure 7: AX component/subsection of EAX register courtesy of c-jump.com
  <a href="http://www.c-jump.com/bcc/c261c/ASM/Instructions/lecture.html" target="_blank">
  <img alt="Subcomponent of EAX register: AX" src="http://www.c-jump.com/bcc/c261c/asm_images/eax.png"/></a>
  
-Next, "CMP AL,0". The first character of the license key in AL is compared against 0h. Refering to a hex to ascii conversion <a href="http://www.asciitable.com/" target="_blank">table</a>, 0 hex is 0 in ascii. Next, if AL equals to 0, the jump will take place, jumping to 0x04010D3. Where ESI is compared against 8h or 8 decimal. There if ESI was lower than 8, it jumps to invalid license error but if it equals or more than 8 it would jump to Valid license key message. However, if AL does not equal to 0, then it would INC (increase) EBX with 1 and then jump back up to 0x4010C1. There [EBX=1 + 0x40211A] = 2nd chracter of license key would be copied to AL. From this we can see that it is a loop that keeps checking each character of the license key. However, if the jump at 0x4010C9 does not take place then AL would be compared with 47h or "G" in ascii. If AL does not equal to "G" then it would continue to increase EBX by one and continue the loop. If AL does equal to "G" then it would increase ESI and EBX by 1. This loop will continue to occour until AL equals to 0. AL will equal to 0 if we reach the end of license key, as there are no data past the license key. From this we know that:
+Next, "CMP AL,0". The first character of the license key in AL is compared against 0h. Referring to a hex to ascii conversion <a href="http://www.asciitable.com/" target="_blank">table</a>, 0 hex is 0 in ascii. Next, if AL equals to 0, the jump will take place, jumping to 0x04010D3. Where ESI is compared against 8h or 8 decimal. There if ESI was lower than 8, it jumps to invalid license error but if it equals or more than 8 it would jump to Valid license key message. However, if AL does not equal to 0, then it would INC (increase) EBX with 1 and then jump back up to 0x4010C1. There [EBX=1 + 0x40211A] = 2nd character of license key would be copied to AL. From this we can see that it is a loop that keeps checking each character of the license key. However, if the jump at 0x4010C9 does not take place then AL would be compared with 47h or "G" in ascii. If AL does not equal to "G" then it would continue to increase EBX by one and continue the loop. If AL does equal to "G" then it would increase ESI and EBX by 1. This loop will continue to occur until AL equals to 0. AL will equal to 0 if we reach the end of license key, as there are no data past the license key. From this we know that:
 + the license key needs to be 16 bytes/characters long, 
 + it has to contain 8 * 47h or "G", and
 + there should be no 0s. 
 
-Now if you create a license key following the mentioned rules, you will be greeted with a valid license key message, or the flag of this crack me. Congratualations.
+Now if you create a license key following the mentioned rules, you will be greeted with a valid license key message, or the flag of this crack me. Congratulations.
 
 Figure 8: The Flag - Success Message
 ![SnD1-CrackMe-The Flag - Success Message](/assets/images/snd1/snd1-success.png)
 
 
-##### Found an error or like what you read?
-Please navigate to <a href="khz-intl.github.io/about" target="_blank">About me</a> page to get in touch. Thanks in advance.
-
 ##### Useful Resource/s
-
-
 Calling convention - ASM: <a href="http://unixwiz.net/techtips/win32-callconv-asm.html" target="_blank">Unixwiz</a>
-
 
 
 
