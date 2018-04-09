@@ -32,22 +32,22 @@ To solve Capture The Flag challenges, we can approach them using a generic routi
 2. Identifying an attack surface
 
 ###### Information Gathering
-The more knowledge we have about the target, the challenge, the more likely were are able to make an appropriate descisions and solving it. We can gather information by doing a research about the target in general, anyalyse the target statically (binary analysis) and dynamically when its running (behaviour analysis).
-A good place to initate our reasearch is by reading the description of the challenge. It includes a cheesy hint, a youtube video and a command to connect to the challenge server, refer to figure 1 below.
+The more knowledge we have about the target, the challenge, the more likely were are able to make an appropriate decision and solving it. We can gather information by doing a research about the target in general, analyse the target statically (binary analysis) and dynamically when its running (behavior analysis).
+A good place to initiate our research is by reading the description of the challenge. It includes a cheesy hint, a YouTube video and a command to connect to the challenge server, refer to figure 1 below.
 
 Figure 1: Challenge Description
 ![fd-pwnablekr-challenge-description](/assets/images/fd-pwnablekr/fd_chall_desc.png)
 
-In the description, it mentions "...What is a file descriptor in linux?". We can guess that the challenge has something to do with file descriptors. In simple terms, a file descriptor is a handle that can be used to access a file or an input/output device. In linux, by default on creation of a process, with the exception of daemons, three standard/default streams are opened for it: Standard Input, Standard Output and Standard Error. These streams can also be refered to numerically:
+In the description, it mentions "...What is a file descriptor in linux?". We can guess that the challenge has something to do with file descriptors. In simple terms, a file descriptor is a handle that can be used to access a file or an input/output device. In linux, by default on creation of a process, with the exception of daemons, three standard/default streams are opened for it: Standard Input, Standard Output and Standard Error. These streams can also be referred to numerically:
 + Standard input or stdin: 0
 + Standard output or stdout: 1
 + Standard Error or stderr: 2
 
-With these streams a program or process can interact with its enviroment. With stdin the program can take input, for example with the use of "cin" in c++. With stdout and stderr information can be used to displayed to the console.
+With these streams a program or process can interact with its environment. With stdin the program can take input, for example with the use of "cin" in c++. With stdout and stderr information can be used to displayed to the console.
 
 If you require further explanation please refer to:
 + The Linux <a href="http://man7.org/linux/man-pages/man3/stdout.3.html#SYNOPSIS " target="_blank">manual </a>(section 4) on "fd, stdin, stdout, stderr" or
-+ Holidaylvr's <a href="https://www.youtube.com/watch?v=EqndHT606Tw" target="_blank">video</a> tutorial "fd, dup()..." on youtube. 
++ Holidaylvr's <a href="https://www.youtube.com/watch?v=EqndHT606Tw" target="_blank">video</a> tutorial "fd, dup()..." on YouTube. 
 
 Now that we are familiar with file descriptor, lets take a look at the challenge.
 
@@ -63,21 +63,21 @@ Figure 2: Connecting to the fd challenge server
 ![fd-pwnablekr-challenge-description](/assets/images/fd-pwnablekr/connecting-to-fd.png)
 
 The server is running on linux. We can use the following commands:
-+ ls: List items in the current dirrctory
-+ cd: Change dirrectory
++ ls: List items in the current directory
++ cd: Change directory
 + vim: Edit/view text and source code files using the vim editor 
 
-If we do a listing (ls) of the current dirrectory we see the:
+If we do a listing (ls) of the current directory we see the:
 + fd: Challenge binary,
 + fd.c: Challenge source code and
 + Flag
 
-One way of analysing the challenge (binary) is to do a static analysis. With this method we try to get as much information from the binary without having it running. Sometimes  a program may behave differently when its running, for example some viruses. If we did not have the source code available we could use the "strings" command to extract the strings/texts from the binary. Sometimes with this method we can extract the function names, hardcoded texts, section names and etc. Running the strings command for the fd binary returns some useful information, refer to figure 3.
+One way of analysing the challenge (binary) is to do a static analysis. With this method we try to get as much information from the binary without having it running. Sometimes  a program may behave differently when its running, for example some viruses. If we did not have the source code available we could use the "strings" command to extract the strings/texts from the binary. Sometimes with this method we can extract the function names, hard coded texts, section names and etc. Running the strings command for the fd binary returns some useful information, refer to figure 3.
 
 Figure 3: Strings analysis of fd binary
 ![strings-analysis-of-fd-binary](/assets/images/fd-pwnablekr/fd-strings_analysis.png)
 
-The strings analysis of the fd binary shows some intresting texts. For example, "good job :)", "learn about Linux file IO" and "LETMEWIN". They sound like a message you would get if you validate a correct or an invalid password/input. Also there is a reference to "atoi". If you are not familiar with programming or atoi function, basically it extracts numbers from a given string. There is also "/bin/cat flag". The cat command prints the file its given as its argument. In this case it prints the flag file. If you scroll down, near the end there is "main". This may refer to the main function of the program. We can search for this function when debugging in our dynamic analysis. Finally, there is also "pass argv[1] a number". This essentially translates to: when launching the program, you may have to pass a number. Argv is a structure where arguments are stored. When a program is launched, in this case, the first argument, argv[0] is the name of binary it self, the second argument is argv[1] is the argument passed when launched. From before we found a call to "atoi". From this we can guess that the program tries to extract numbers from the user input or argv[1].
+The strings analysis of the fd binary shows some interesting texts. For example, "good job :)", "learn about Linux file IO" and "LETMEWIN". They sound like a message you would get if you validate a correct or an invalid password/input. Also there is a reference to "atoi". If you are not familiar with programming or atoi function, basically it extracts numbers from a given string. There is also "/bin/cat flag". The cat command prints the file its given as its argument. In this case it prints the flag file. If you scroll down, near the end there is "main". This may refer to the main function of the program. We can search for this function when debugging in our dynamic analysis. Finally, there is also "pass argv[1] a number". This essentially translates to: when launching the program, you may have to pass a number. Argv is a structure where arguments are stored. When a program is launched, in this case, the first argument, argv[0] is the name of binary it self, the second argument is argv[1] is the argument passed when launched. From before we found a call to "atoi". From this we can guess that the program tries to extract numbers from the user input or argv[1].
 
 Since we have access to the source code of the binary we could also analyse that. Open the source code in vim:
 
@@ -85,14 +85,14 @@ Since we have access to the source code of the binary we could also analyse that
     vim fd.c
 {% endhighlight %}
 
-The souce file should look like the one in figure 4.
+The source file should look like the one in figure 4.
 
 Figure 4: Source code of fd shown in vim editor- vim fd.c
 ![strings-analysis-of-fd-binary](/assets/images/fd-pwnablekr/fd-source-file-vim.png)
 
 ###### A general understanding
 
-It is easier to understand if we tried to grasp what the code does in general and then the specifics. The code imports three headers and has 1 function named "main". In the main function something is read and stored from a file descriptor to a variable and it is compared with a hardcoded string "LETMEWIN". If the variable did equal then the flag is shown . If it did not, "learn about Linux file IO" message is shown. 
+It is easier to understand if we tried to grasp what the code does in general and then the specifics. The code imports three headers and has 1 function named "main". In the main function something is read and stored from a file descriptor to a variable and it is compared with a hard coded string "LETMEWIN". If the variable did equal then the flag is shown . If it did not, "learn about Linux file IO" message is shown. 
 
 ###### The specifics
 Now that we have an understanding of what the code does in general, let's look at what each line of code do. 
@@ -120,7 +120,7 @@ Each elements is defined to be the type of Char. The Char property is used to id
 Figure 5: The buf array visualised - diagram design inspired by c++.com
 ![diagram: a graphical visualisation of the buf array](/assets/images/fd-pwnablekr/buf-array-fd.jpg)
 
-On the 5th line a function named "main" is defined. It takes argc, argv and envp as parameters and returns an integer (a number). Argc (argument count) is an integer that holds the count, the total number of arguments passed from the command line. By default the name of the program is considered an argument thus argc is incremented by 1 and preappended to argv. Argv (argument vector) is an array that holds the arguments passed from command line. The first argument passed by the user will be the 2nd element of argv. This is because the name of the program is automatically prepended. Envp is an array where enviroment strings are stored/referenced (<a href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa299386(v=vs.60)" target="_blank">Microsoft</a>, 2006).
+On the 5th line a function named "main" is defined. It takes argc, argv and envp as parameters and returns an integer (a number). Argc (argument count) is an integer that holds the count, the total number of arguments passed from the command line. By default the name of the program is considered an argument thus argc is incremented by 1 and pre-appended to argv. Argv (argument vector) is an array that holds the arguments passed from command line. The first argument passed by the user will be the 2nd element of argv. This is because the name of the program is automatically pre-pended. Envp is an array where environment strings are stored/referenced (<a href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa299386(v=vs.60)" target="_blank">Microsoft</a>, 2006).
 
 The main function consist of many operations. They are described chronologically: 
 
@@ -140,7 +140,7 @@ The first operation:
     int fd = atoi(argv[1]) - 0x1234;    
 {% endhighlight %}
 
-In this operation two things occur. First a variable named fd with a type of integer is defined. Imediately it is initialised with a subtraction operation. The first operand of subtraction is atoi(argv[1] or the user input) and the second operand is a number in hex. The first operand is the returning value to a call to atoi function. The atoi function takes a string (argv[1]) and extracts the integers. The second parameter is in hex since it has the "0x" prefix. To convert this to decimal for subtraction, we can use the int() conversion function from python. This function takes in a string and its base and returns it in base10 form. The hex number equates to 4660 in decimal, see below:
+In this operation two things occur. First a variable named fd with a type of integer is defined. Immediately it is initialised with a subtraction operation. The first operand of subtraction is atoi(argv[1] or the user input) and the second operand is a number in hex. The first operand is the returning value to a call to atoi function. The atoi function takes a string (argv[1]) and extracts the integers. The second parameter is in hex since it has the "0x" prefix. To convert this to decimal for subtraction, we can use the int() conversion function from python. This function takes in a string and its base and returns it in base10 form. The hex number equates to 4660 in decimal, see below:
 
 {% highlight python %}
 
@@ -148,7 +148,7 @@ In this operation two things occur. First a variable named fd with a type of int
     = 4660
 {% endhighlight %}
 
-If you remember reading about file descriptors, they were refered to as fd for short. This variable might be used as a reference to a fd.
+If you remember reading about file descriptors, they were referred to as fd for short. This variable might be used as a reference to a fd.
 
 {% highlight c++ %}
 
@@ -157,7 +157,7 @@ If you remember reading about file descriptors, they were refered to as fd for s
 
 {% endhighlight %}
 
-Next, a variable named len is defined. It is initalised with zero but on the next line it is set to the returning value of a call to the read function. According to the Linux Programmer's <a href="http://man7.org/linux/man-pages/man2/read.2.html" target="_blank">Manual</a> (man 2 read) the read function takes in the following parameters:
+Next, a variable named len is defined. It is initialised with zero but on the next line it is set to the returning value of a call to the read function. According to the Linux Programmer's <a href="http://man7.org/linux/man-pages/man2/read.2.html" target="_blank">Manual</a> (man 2 read) the read function takes in the following parameters:
 + fd: The file descriptor to read from.
 + buf*: Pointer to buffer, where read bytes are stored temporarily.
 + Count: Number of bytes to read.
@@ -169,7 +169,7 @@ And attempts to read up to $Count number of bytes from $fd file descriptor and s
 
 From this we can confirm that the first argument passed by the user (argv[1]) is used to determine the file descriptor to be used in the read function call.
 
-Next, the buf variable is compared with a hardcoded string "LETMEWIN" using the strcmp function.
+Next, the buf variable is compared with a hard-coded string "LETMEWIN" using the strcmp function.
 
 {% highlight c++ %}
     if(!strcmp("LETMEWIN\n", buf)){
@@ -194,15 +194,15 @@ If the strings are not the same:
 + A message is printed to the console, "learn about file IO".
 + The program exits by returning 0.
 
-##### Identifying an attack surfuce
-Since we have the source code and know what the program does exactly, it is not necessary to cunduct a dynamic analysis. Now that we understand what the program does exactly:
+##### Identifying an attack surface
+Since we have the source code and know what the program does exactly, it is not necessary to conduct a dynamic analysis. Now that we understand what the program does exactly:
 + Extracts the integer from the user input.
 + Subtracts 4660 from that.
 + Use that as a file descriptor to read 32 bytes.  
 + Compares the read bytes to "LETMEWIN".
 + If both strings are the same, the flag is printed to the console.
 
-To get the flag, the the buf variable must be the same as "LETMEWIN". The only thing that modifies that variable is the read function. The read function reads 32 bytes from the file descriptor passed as one of its parameters. Since we have control of which file descriptor is the bytes read from we have to figure out a way to write to it. Going back to the basics, three file descriptors/streams are openned for each process. The only one that applies to our probleme is Standard Input, 0. This is because we need to write to a file descriptor, the other two are for output purposes. Now that we have a file descriptor that we can write to, we need the fd passed to read function to equal to 0 (Standard Input file descriptor= 0). 
+To get the flag, the the buf variable must be the same as "LETMEWIN". The only thing that modifies that variable is the read function. The read function reads 32 bytes from the file descriptor passed as one of its parameters. Since we have control of which file descriptor is the bytes read from we have to figure out a way to write to it. Going back to the basics, three file descriptors/streams are opened for each process. The only one that applies to our problem is Standard Input, 0. This is because we need to write to a file descriptor, the other two are for output purposes. Now that we have a file descriptor that we can write to, we need the fd passed to read function to equal to 0 (Standard Input file descriptor= 0). 
 
 The math is simple:
 {% highlight c++ %}
@@ -222,7 +222,7 @@ If we launch the program from the command line with an argument of 4660 we shoul
 ##### Congratulations
 If you did everything right, you should be greeted with a success message and the flag (figure 6):
 
-Figure 6: The success message and the flag printed out to theconsole.
+Figure 6: The success message and the flag printed out to the console.
 ![The success message: 'Good job :)', the flag 'mommy! I think I know what a file descriptor is!!'](/assets/images/fd-pwnablekr/fd-success.png)
 
 Dont forget to validate your flag on <a href="www.pwnable.kr/play.php" target="_blank">Pwnable.kr</a>:
