@@ -5,7 +5,7 @@ date:   2018-03-26 10:18:00
 categories: capture-the-flag pawnablekr Writeup  
 ---
 
-##### This blog is incomplete. In progress.
+
 
 The objective of this challenge (fd - pwnable.kr) is to capture the flag.
 
@@ -20,6 +20,7 @@ Note: If you are here to simply take the flag without the intention to learn, yo
 ##### Tl;dr:
 Summary
 
+The challenge revolves around learning and understanding the file descriptors (linux), specially the three standard ones: Standard Input, Output and Error. Utilising Standard Input in solving the problem.   
 
 ##### Solving the challenge
 To solve Capture The Flag challenges, we can approach them using a generic routine/technique:
@@ -139,7 +140,7 @@ The first operation:
     int fd = atoi(argv[1]) - 0x1234;    
 {% endhighlight %}
 
-In this operation two things occur. First a variable named fd with a type of integer is defined. Imediately it is initialised with a subtraction operation. The first operand of subtraction is argv[1] or user input and the second operand is a number in hex. It is in hex since it has the "0x" prefix. To convert this to decimal, we can use the int() conversion function from python. This function takes in a string and its base and returns it in base10 form. The hex number equates to 4660 in decimal, see below:
+In this operation two things occur. First a variable named fd with a type of integer is defined. Imediately it is initialised with a subtraction operation. The first operand of subtraction is atoi(argv[1] or the user input) and the second operand is a number in hex. The first operand is the returning value to a call to atoi function. The atoi function takes a string (argv[1]) and extracts the integers. The second parameter is in hex since it has the "0x" prefix. To convert this to decimal for subtraction, we can use the int() conversion function from python. This function takes in a string and its base and returns it in base10 form. The hex number equates to 4660 in decimal, see below:
 
 {% highlight python %}
 
@@ -149,7 +150,86 @@ In this operation two things occur. First a variable named fd with a type of int
 
 If you remember reading about file descriptors, they were refered to as fd for short. This variable might be used as a reference to a fd.
 
-Next, another variable named len is defined. It is iniatlised with zero but on the next line it is set ...
+{% highlight c++ %}
+
+    int len = 0;
+    len = read(fd, buf, 32);
+
+{% endhighlight %}
+
+Next, a variable named len is defined. It is initalised with zero but on the next line it is set to the returning value of a call to the read function. According to the Linux Programmer's <a href="http://man7.org/linux/man-pages/man2/read.2.html" target="_blank">Manual</a> (man 2 read) the read function takes in the following parameters:
++ fd: The file descriptor to read from.
++ buf*: Pointer to buffer, where read bytes are stored temporarily.
++ Count: Number of bytes to read.
+
+And attempts to read up to $Count number of bytes from $fd file descriptor and stores it in $buf* buffer. In this case the read function is called to read using the following parameters:
++ fd: fd = atoi(argv[1]) - 4660
++ buf: buf[32]
++ count: 32
+
+From this we can confirm that the first argument passed by the user (argv[1]) is used to determine the file descriptor to be used in the read function call.
+
+Next, the buf variable is compared with a hardcoded string "LETMEWIN" using the strcmp function.
+
+{% highlight c++ %}
+    if(!strcmp("LETMEWIN\n", buf)){
+        print("good job :)\n");
+        system("/bin/cat flag");
+        exit(0);
+}
+{% endhighlight %}
+
+
+The strcmp function takes in two strings, compares them and return an integer indicating their relationship. If both strings are the same, the returned integer would be 0 and if they are not the same the returned integer would be a non-zero value. If the strings are the same then:
++ A message is printed to the console, "good job :)".
++ The flag is printed also to the console using the cat command.
++ The program exits.
+
+Else:
+{% highlight c++ %}
+    print("learn about file IO\n");
+    return 0;
+{% endhighlight %}
+If the strings are not the same:
++ A message is printed to the console, "learn about file IO".
++ The program exits by returning 0.
+
+##### Identifying an attack surfuce
+Since we have the source code and know what the program does exactly, it is not necessary to cunduct a dynamic analysis. Now that we understand what the program does exactly:
++ Extracts the integer from the user input.
++ Subtracts 4660 from that.
++ Use that as a file descriptor to read 32 bytes.  
++ Compares the read bytes to "LETMEWIN".
++ If both strings are the same, the flag is printed to the console.
+
+To get the flag, the the buf variable must be the same as "LETMEWIN". The only thing that modifies that variable is the read function. The read function reads 32 bytes from the file descriptor passed as one of its parameters. Since we have control of which file descriptor is the bytes read from we have to figure out a way to write to it. Going back to the basics, three file descriptors/streams are openned for each process. The only one that applies to our probleme is Standard Input, 0. This is because we need to write to a file descriptor, the other two are for output purposes. Now that we have a file descriptor that we can write to, we need the fd passed to read function to equal to 0 (Standard Input file descriptor= 0). 
+
+The math is simple:
+{% highlight c++ %}
+    X - 4660 = 0
+    
+    Therefore X must equal 4660:
+    4660 - 4660 = 0
+
+{% endhighlight %}
+
+If we launch the program from the command line with an argument of 4660 we should be able to write the required text "LETMEWIN" to the Standard Input:
+{% highlight c++ %}
+    ./fd 4660
+    LETMEWIN
+{% endhighlight %}
+
+##### Congratulations
+If you did everything right, you should be greeted with a success message and the flag (figure 6):
+
+Figure 6: The success message and the flag printed out to theconsole.
+![The success message: 'Good job :)', the flag 'mommy! I think I know what a file descriptor is!!'](/assets/images/fd-pwnablekr/fd-success.png)
+
+Dont forget to validate your flag on <a href="www.pwnable.kr/play.php" target="_blank">Pwnable.kr</a>:
+
+Figure 7: Validating the flag on Pwnable.kr (first challenge):
+![](/assets/images/fd-pwnablekr/fd-validate.png)
+
 
 
 

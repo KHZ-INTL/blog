@@ -1,16 +1,17 @@
+# Site Settings
 name: Hossein Anvari
 description: Blogs of ideas and challenges
-meta_description: "Blogging about Information Technology: Capture-The-Flag(CTF) challenges, Wargames and Programming"
+meta_description: "Blogging about Capture-The-Flag(CTF) challenges, programming and intriguing subjects."
 
 markdown: kramdown
 highlighter: rouge
 logo: false
 paginate: 15
-baseurl: '/'
+baseurl: /
 domain_name: 'http://khz-intl.github.io'
 google_analytics: 'UA-116486746-1'
-plugin dir: [jekyll-paginate]
+plugins: [jekyll-paginate]
 
 # Details for the RSS feed generator
 url:            'https://khz-intl.github.io/'
-author:         'Hossein Anvari'
+author: 'Hossein Anvari'
