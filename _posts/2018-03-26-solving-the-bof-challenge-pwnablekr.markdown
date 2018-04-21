@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Solving the fd challenge - pwnable.kr"
-date:   2018-03-26 10:18:00
-categories: capture-the-flag pawnablekr Writeup  
+title:  "Solving the bof challenge - pwnable.kr"
+date:   2018-03-30 10:18:00
+categories: capture-the-flag pawnablekr Writeup buffer-overflow  
 ---
 
 
@@ -43,7 +43,7 @@ In the description, it mentions "...What is a file descriptor in linux?". We can
 + Standard output or stdout: 1
 + Standard Error or stderr: 2
 
-With these streams a program or process can interact with its environment. With stdin the program can take input, for example with the use of "cin" in c++. With stdout and stderr information can be displayed to the console.
+With these streams a program or process can interact with its environment. With stdin the program can take input, for example with the use of "cin" in c++. With stdout and stderr information can be used to displayed to the console.
 
 If you require further explanation please refer to:
 + The Linux <a href="http://man7.org/linux/man-pages/man3/stdout.3.html#SYNOPSIS " target="_blank">manual </a>(section 4) on "fd, stdin, stdout, stderr" or
@@ -72,7 +72,7 @@ If we do a listing (ls) of the current directory we see the:
 + fd.c: Challenge source code and
 + Flag
 
-One way of analysing the challenge (binary) is to do a static analysis. With this method we try to get as much information from the binary without having it running. Sometimes  a program may behave differently when its running, for example some viruses. If the source code is not available we could use the "strings" command to extract the strings/texts from the binary. Sometimes with this method we can extract the function names, hard coded texts, section names and etc. Running the strings command for the fd binary returns some useful information, refer to figure 3.
+One way of analysing the challenge (binary) is to do a static analysis. With this method we try to get as much information from the binary without having it running. Sometimes  a program may behave differently when its running, for example some viruses. If we did not have the source code available we could use the "strings" command to extract the strings/texts from the binary. Sometimes with this method we can extract the function names, hard coded texts, section names and etc. Running the strings command for the fd binary returns some useful information, refer to figure 3.
 
 Figure 3: Strings analysis of fd binary
 ![strings-analysis-of-fd-binary](/assets/images/fd-pwnablekr/fd-strings_analysis.png)
