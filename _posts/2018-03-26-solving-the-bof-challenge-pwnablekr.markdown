@@ -5,12 +5,12 @@ date:   2018-03-30 10:18:00
 categories: capture-the-flag pawnablekr Writeup buffer-overflow  
 ---
 
+This post is incomplete. I hope to finnish this in my upcoming spare time. 
 
+The objective of this challenge (bof - pwnable.kr) is to learn about buffer overflow and capture the the flag.
 
-The objective of this challenge (fd - pwnable.kr) is to learn about file descriptors, specially the standard file descriptors (Standard Input, Standard Outputm and Standard Error).
-
-Challenge: <a href="http://www.pwnable.kr/play.php" target="_blank">fd</a>, [Toddler's Bottle section] from Pwnable.kr
-<img alt="fd challenge from pwnable.kr" src="http://www.wmon.com.tw/RO/photo/card/poring.jpg"/>
+Challenge: <a href="http://www.pwnable.kr/play.php" target="_blank">bof</a>, [Toddler's Bottle section] from Pwnable.kr
+<img alt="bof challenge from pwnable.kr" src="http://photos1.blogger.com/blogger/3726/3243/320/Smokie_Card.png"/>
 
 Rules:
 No brute forcing as mentioned on the challenge website.
