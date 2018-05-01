@@ -7,7 +7,7 @@ categories: capture-the-flag pawnablekr Writeup "file descriptor"
 
 
 
-The objective of this challenge (fd - pwnable.kr) is to learn about file descriptors, specially the standard file descriptors (Standard Input, Standard Outputm and Standard Error).
+The objective of this challenge (fd - pwnable.kr) is to learn about file descriptors, specially the standard file descriptors (Standard Input, Standard Output and Standard Error).
 
 Challenge: <a href="http://www.pwnable.kr/play.php" target="_blank">fd</a>, [Toddler's Bottle section] from Pwnable.kr
 <img alt="fd challenge from pwnable.kr" src="http://www.wmon.com.tw/RO/photo/card/poring.jpg"/>

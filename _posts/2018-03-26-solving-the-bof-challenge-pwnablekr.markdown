@@ -7,7 +7,7 @@ categories: capture-the-flag pawnablekr Writeup buffer-overflow
 
 This post is incomplete. I hope to finnish this in my upcoming spare time. 
 
-The objective of this challenge (bof - pwnable.kr) is to learn about buffer overflow and capture the the flag.
+The objective of this challenge (bof - pwnable.kr) is to learn about buffer overflow and capture the the flag. This challenge is an introductory to the bof principles.
 
 Challenge: <a href="http://www.pwnable.kr/play.php" target="_blank">bof</a>, [Toddler's Bottle section] from Pwnable.kr
 <img alt="bof challenge from pwnable.kr" src="http://photos1.blogger.com/blogger/3726/3243/320/Smokie_Card.png"/>
@@ -20,7 +20,7 @@ Note: If you are here to simply take the flag without the intention to learn, yo
 ##### Tl;dr:
 Summary
 
-The challenge revolves around learning and understanding the file descriptors (linux), specially the three standard ones: Standard Input, Output and Error. Utilising Standard Input in solving the problem.   
+The challenge revolves around learning and understanding about buffer over flow. In this challenge a variable used as a buffer is over flowed and used to change the EIP and ...
 
 ##### Solving the challenge
 To solve Capture The Flag challenges, we can approach them using a generic routine/technique:
