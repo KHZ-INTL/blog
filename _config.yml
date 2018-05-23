@@ -1,17 +1,27 @@
 # Site Settings
-name: Hossein Anvari
-description: Blogs of ideas and challenges
+name: "Hossein Anvari"
+title: "Hossein Anvari"
+description: "Blogs of ideas and challenges"
 meta_description: "Blogging about Capture-The-Flag(CTF) challenges, programming and intriguing subjects."
+author: "Hossein Anvari"
+author_description: "An amateur python programmer and phtographer who enjoys blogging about Capture-The-Flag(CTF) challenges, programming and intriguing subjects."
+# Details for the RSS feed generator
+url:  'https://khz-intl.github.io/'
+baseurl: ""
+domain_name: 'http://khz-intl.github.io'
 
 markdown: kramdown
 highlighter: rouge
-logo: false
-paginate: 15
-baseurl: /
-domain_name: 'http://khz-intl.github.io'
-google_analytics: 'UA-116486746-1'
-plugins: [jekyll-paginate]
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
 
-# Details for the RSS feed generator
-url:            'https://khz-intl.github.io/'
-author: 'Hossein Anvari'
+logo: true
+paginate: 15
+plugins: [jekyll-paginate, jekyll-sitemap]
+
+google_analytics: 'UA-116486746-1'
+disqus_shortname: 'Hossein-Anvari'
+
+

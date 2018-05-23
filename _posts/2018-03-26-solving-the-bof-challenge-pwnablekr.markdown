@@ -20,7 +20,7 @@ Note: If you are here to simply take the flag without the intention to learn, yo
 ##### Tl;dr:
 Summary
 
-The challenge revolves around learning and understanding about buffer over flow. In this challenge a variable used as a buffer is over flowed and used to change the EIP and ...
+The challenge revolves around learning and understanding about buffer over flow. In this challenge a variable used as a buffer is overflowed and the stack is modified as result. 
 
 ##### Solving the challenge
 To solve Capture The Flag challenges, we can approach them using a generic routine/technique:
@@ -32,7 +32,7 @@ To solve Capture The Flag challenges, we can approach them using a generic routi
 2. Identifying an attack surface
 
 ###### Information Gathering
-The more knowledge we have about the target, the challenge, the more likely were are able to make an appropriate decision and solving it. We can gather information by doing a research about the target in general, analyse the target statically (binary analysis) and dynamically when its running (behavior analysis).
+We can gather information by doing a research about the target in general, analyse the target statically (binary analysis) and dynamically when its running (behavior analysis).
 A good place to initiate our research is by reading the description of the challenge. It includes a cheesy hint, a YouTube video and a command to connect to the challenge server, refer to figure 1 below.
 
 Figure 1: Challenge Description
