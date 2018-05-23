@@ -86,6 +86,10 @@ comments: true
             {% if page.disqus %}
                 {% include disqus.html %}
             {% endif %}
+            {% if page.comments %}
+                {% include disqus.html %}
+            {% endif %}
+
         </footer>
 
     </article>
