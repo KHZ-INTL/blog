@@ -7,7 +7,6 @@ categories: capture-the-flag pawnablekr Writeup buffer-overflow
 
 This post is incomplete. I hope to finish this in my upcoming spare time.
  
-
 The objective of this challenge (bof - pwnable.kr) is to learn about buffer overflow and capture the the flag. This challenge is an introductory to the bof principles.
 
 Challenge: <a href="http://www.pwnable.kr/play.php" target="_blank">bof</a>, [Toddler's Bottle section] from Pwnable.kr
