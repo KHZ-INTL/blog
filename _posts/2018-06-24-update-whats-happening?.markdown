@@ -5,8 +5,6 @@ date:   2018-06-24 10:18:00
 categories: update
 ---
 
-<img alt="header image" src="http://photos1.blogger.com/blogger/3726/3243/320/Smokie_Card.png"/>
-
 I have been absent from the blog for some time. It is partially due to different commitments and also partially due to the nature of the blog posts. Specifically, the Capture-The-Flag write ups, they require considerable time to write. This is because, I hope to present accurate and detailed posts. Despite that when I have the opportunity, I wish to contribute to Work In Progress (WIP) blog posts.
 
 ##### What is coming up?
