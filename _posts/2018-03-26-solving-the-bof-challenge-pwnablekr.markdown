@@ -6,13 +6,6 @@ categories: capture-the-flag pawnablekr Writeup buffer-overflow
 ---
 
 This post is incomplete. I hope to finish this in my upcoming spare time.
-In the near future I am planning to write on few more pwnable.kr challenges. Some include:
-+ Collision
-+ Flag
-+ Sheshock
-+ [cmd1]
-
-I am also aware of the inoperative back button and as well as other elements of the blog. For the time being please use the back button provided by your browser. The blog is hosted on github, know how to fix? Please send a pull request. All appreciated.  
  
 
 The objective of this challenge (bof - pwnable.kr) is to learn about buffer overflow and capture the the flag. This challenge is an introductory to the bof principles.
