@@ -7,7 +7,7 @@ author: "Hossein Anvari"
 author_description: "Blogging about Capture-The-Flag(CTF) challenges, programming and intriguing subjects."
 # Details for the RSS feed generator
 url:  'https://khz-intl.github.io/'
-baseurl: ""
+baseurl: /
 domain_name: 'https://khz-intl.github.io'
 
 markdown: kramdown
