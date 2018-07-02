@@ -1,14 +1,14 @@
 # Site Settings
 name: "Hossein Anvari"
 title: "Hossein Anvari"
-description: "Blogs of ideas and challenges"
+description: "Blogs of ideas and challenges; Capture-The-Flag, code and etc. "
 meta_description: "Blogging about Capture-The-Flag(CTF) challenges, programming and intriguing subjects."
 author: "Hossein Anvari"
-author_description: "An amateur python programmer and phtographer who enjoys blogging about Capture-The-Flag(CTF) challenges, programming and intriguing subjects."
+author_description: "Blogging about Capture-The-Flag(CTF) challenges, programming and intriguing subjects."
 # Details for the RSS feed generator
 url:  'https://khz-intl.github.io/'
 baseurl: ""
-domain_name: 'http://khz-intl.github.io'
+domain_name: 'https://khz-intl.github.io'
 
 markdown: kramdown
 highlighter: rouge
