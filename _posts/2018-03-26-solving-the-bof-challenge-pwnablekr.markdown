@@ -2,14 +2,19 @@
 layout: post
 title:  "Solving the bof challenge - pwnable.kr"
 date:   2018-03-30 10:18:00
-categories: capture-the-flag pawnablekr Writeup buffer-overflow  
+categories: capture-the-flag pawnablekr Writeup buffer-overflow 5-points 
 ---
-
-This post is incomplete. I hope to finish this in my upcoming spare time.
  
 The objective of this challenge (bof - pwnable.kr) is to learn about buffer overflow and capture the flag. This challenge is introductory to the bof principles.
 
-Challenge: <a href="http://www.pwnable.kr/play.php" target="_blank">bof</a>, [Toddler's Bottle section] from Pwnable.kr
+Challenge Description:
+- Name: bof
+- Difficulty: Easy
+- Category: Buffer-overflow, assembly
+- Points: 5 pts
+- Host: <a href="http://www.pwnable.kr" target="_blank">Pwnable.kr/play.php</a> - [Toddler's Bottle] section
+
+
 <img alt="bof challenge from pwnable.kr" src="http://photos1.blogger.com/blogger/3726/3243/320/Smokie_Card.png"/>
 
 Rules:

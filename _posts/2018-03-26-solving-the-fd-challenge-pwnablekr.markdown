@@ -9,7 +9,12 @@ categories: capture-the-flag pawnablekr Writeup file descriptor
 
 The objective of this challenge (fd - pwnable.kr) is to learn about file descriptors, specially the standard file descriptors (Standard Input, Standard Output and Standard Error).
 
-Challenge: <a href="http://www.pwnable.kr/play.php" target="_blank">fd</a>, [Toddler's Bottle section] from Pwnable.kr
+Challenge: 
+- Name: fd
+- Difficulty: Easy
+- Category: File descriptors
+- Rating: 1 pts
+- Host: <a href="http://www.pwnable.kr/play.php" target="_blank">Pwnable.kr</a> - [Toddler's Bottle] section
 <img alt="fd challenge from pwnable.kr" src="http://www.wmon.com.tw/RO/photo/card/poring.jpg"/>
 
 Rules:
@@ -195,7 +200,7 @@ If the strings are not the same:
 + The program exits by returning 0.
 
 ##### Identifying an attack surface
-Since we have the source code and know what the program does exactly, it is not necessary to conduct a dynamic analysis. Now that we understand what the program does exactly:
+Since we have the source code and know what the program does exactly, it is not necessary to conduct a dynamic analysis. However, it is recomended and it is a good practice to run and test the challenge as it may help confirm and further our understanding. Now that we understand what the program does exactly:
 + Extracts the integer from the user input.
 + Subtracts 4660 from that.
 + Use that as a file descriptor to read 32 bytes.  
@@ -230,6 +235,7 @@ Dont forget to validate your flag on <a href="http://www.pwnable.kr/play.php" ta
 Figure 7: Validating the flag on Pwnable.kr (first challenge):
 ![](/assets/images/fd-pwnablekr/fd-validate.png)
 
-
+##### Challenges in Toddler's Bottle section
+The challenges in the Toddler's Bottle section of pwnable.kr are not ordered based on their difficulty. It seems that they are placed in random order. If you are new to CTFs and war games, please attemp the challenges that have low points. This is because points are usally awarded based on difficulty or the durration it takes to solve. Furthermore, the challenges in this section cover different topics and knowledge. the skills learned from these will help you proceed in one way or another.   
 
 
