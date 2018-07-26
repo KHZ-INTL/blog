@@ -1,9 +1,8 @@
 ---
 layout: default
-disqus: false
+disqus: true
 archive: false
 post_class: post-template
-comments: true
 ---
 
 
@@ -84,14 +83,9 @@ comments: true
 
             <!-- Share links section -->
             {% include share.html %}
-            
-            {% if page.comments %}
-                <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.5/material.indigo-pink.min.css">
-                <script src="https://storage.googleapis.com/code.getmdl.io/1.0.5/material.min.js"></script>
-                <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-                <link rel="stylesheet" type="text/css" href="assets/css/comments.css">
-                {% include comments-new.html %}
-                {% include comments.html %}
+
+            {% if page.disqus %}
+                include disqus.html
             {% endif %}
            
 
