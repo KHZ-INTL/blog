@@ -7,7 +7,13 @@ categories: Crackme SnD Writeup
 
 The objective of this Crack-Me is to get the flag/ the success message by either validating a license key from a file or patching the execution flow of the program. You may use any other methods. 
 
-Crack-Me: Crack-Me from Search and Destroy (SnD) Reversing Tutorial by Lena #2
+Challenge Description:
+- Name: Search and Destroy (SnD): Reversing Tutorial by Lena #2
+- Difficulty: Easy
+- Category: Crack Me, assembly
+- Rating: -
+- Host: Search and Destroy, Lena
+
 
 ###### A personal note
 At the time of writing of this write-up, I had moved from Windows to Linux OS. Some resources were not available. However, necessary resources were included to compensate. The pictures/screenshots may look different but please use memory addresses as a reference for navigating in between them.   
