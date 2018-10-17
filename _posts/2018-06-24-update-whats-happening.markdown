@@ -9,6 +9,7 @@ I have been absent from the blog for some time. It is partially due to different
 
 ##### What is coming up?
 In the upcoming blog posts, you can expect more pwnable.kr challenge write-ups:
++ bof
 + Collision
 + Flag
 + Shellshock
@@ -27,6 +28,6 @@ The aim of this blog is to provide accurate and detailed posts. To improve the c
 One of my personal goal from this blog is to improve my English. I hope to do this by expressing ideas in writing. The posts may contain literacy errors. Thus, any feedback on that regards is also appreciated.
 
 ##### How to get in contact?
-You can send feedback, comments and or other matters to me via: 
+You can send feedback, comments and or other matters to me via:
 + Email: KHZ.INTL@gmail.com
 
