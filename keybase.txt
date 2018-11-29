@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/x0red
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://khz-intl.github.io
+  * I am x0red (https://keybase.io/x0red) on keybase.
+  * I have a public key ASCpaLz9mqDEzZBYMfoZT9wgmi-myHCh3s4vy17SguEQPwo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0120a968bcfd9aa0c4cd905831fa194fdc209a2fa6c870a1dece2fcb5ed282e1103f0a",
+      "host": "keybase.io",
+      "kid": "0120a968bcfd9aa0c4cd905831fa194fdc209a2fa6c870a1dece2fcb5ed282e1103f0a",
+      "uid": "3ecce65222279dc3ee5cfe3f409bb119",
+      "username": "x0red"
+    },
+    "merkle_root": {
+      "ctime": 1543516974,
+      "hash": "bae45ba9e91a46515da94925d39727cafffa6e01e57a39c864d9b2fbe6814a891155e2f155b78ee930739eab6b32b2515e281919ef21387a835b7ad21c1098ef",
+      "hash_meta": "a3d6c374bf5784f0e0e3f4ba253ce9869d3dad0f2c1c40bacddef380e0f6c4dd",
+      "seqno": 4028574
+    },
+    "service": {
+      "entropy": "uFDXPU/M9XlJXRTvvaPRel1p",
+      "hostname": "khz-intl.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "2.10.1"
+  },
+  "ctime": 1543516993,
+  "expire_in": 504576000,
+  "prev": "7eb8591f2479e53cc469e10f2c072df3b244a9a081fe654f32a23feae16e3d9b",
+  "seqno": 7,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgqWi8/ZqgxM2QWDH6GU/cIJovpshwod7OL8te0oLhED8Kp3BheWxvYWTESpcCB8QgfrhZHyR55TzEaeEPLAct87JEqaCB/mVPMqI/6uFuPZvEIDW3kS2L3Y1H/Ye2QEgvll/XmmsZrz1u/yU5Qi4jDBjdAgHCo3NpZ8RAL9//dwybuRrG/aEIv6lnYC3OcZYc29GcUh5i2OQ0uFYAceltU/rSeP7v0A3587sNVVoYUm3TieMREIlLhPTMDqhzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIAhhUwEVhKbWkoUo+rVL7ygyHxaYC5+7+ZHgtoTrCLapo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/x0red
+
+==================================================================
